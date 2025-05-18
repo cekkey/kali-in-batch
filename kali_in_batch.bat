@@ -57,12 +57,6 @@ if not exist "%APPDATA%\kali_in_batch" (
         pause >nul
         start https://nmap.org/download.html#windows
     )
-    where winget >nul 2>nul
-    if !errorlevel! neq 0 (
-        echo Press any key to go to https://aka.ms/winget-cli and download Winget...
-        pause >nul
-        start https://aka.ms/winget-cli
-    )
     where vim >nul 2>nul
     if !errorlevel! neq 0 (
         echo Press any key to go to https://www.vim.org/download.php and download Vim...
