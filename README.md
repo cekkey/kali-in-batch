@@ -11,6 +11,7 @@ A simulated Kali Linux environment in batch.
 ### Usage
 
 Run `kali_in_batch.bat` inside the src directory.
+DO NOT MOVE THE FILE OUTSIDE THE SRC DIRECTORY.
 
 ### Features
 

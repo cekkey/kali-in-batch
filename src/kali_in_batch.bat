@@ -89,6 +89,7 @@ if not exist "%APPDATA%\kali_in_batch" (
     mkdir "%APPDATA%\kali_in_batch" >nul 2>nul
     @echo on
     echo !install_part!>"%APPDATA%\kali_in_batch\install_part.txt"
+    echo 1.0.0>"%APPDATA%\kali_in_batch\VERSION.txt"
     @echo off
 	choice /c 12 /m "Done. Press 1 to continue booting, or press 2 to delete your kali rootfs and exit."
 	if errorlevel 2 goto wipe
@@ -150,6 +151,7 @@ if !errorlevel! neq 0 (
     pause 
     exit
 )
+echo Checking for updates...
 echo Done.
 timeout /t 1 /nobreak >nul
 echo.
@@ -158,7 +160,7 @@ echo.
 goto startup
 
 :startup
-rem navigate to home directory
+rem Navigate to home directory
 cd /d "!install_part!\home\!username!"
 if %errorlevel% neq 0 (
     echo error
@@ -338,8 +340,12 @@ if "!command!"=="" (
         powershell -command "Get-Content -Path '!args!' -Raw"
     )
 ) else if "!command!"=="uname" (
+    rem Get version info from %APPDATA%%\kali_in_batch\VERSION.txt
+    for /f "tokens=1* delims= " %%a in ("%APPDATA%\kali_in_batch\VERSION.txt") do (
+        set "kib_ver=%%a"
+    )
     if "!args!"=="-a" (
-        for /f "tokens=4-5 delims= " %%a in ('ver') do echo OS: Windows %%a %%b
+        echo OS: Kali in Batch v%kib_ver%
         echo Kernel: !os!
         echo Architecture: !PROCESSOR_ARCHITECTURE!
     ) else if "!args!"=="--help" (
@@ -351,7 +357,7 @@ if "!command!"=="" (
         echo -o, --operating-system  display operating system name
         echo {no option}    print kernel name
     ) else if "!args!"=="-o" (
-        for /f "tokens=4-5 delims= " %%a in ('ver') do echo Windows %%a %%b
+        echo Kali in Batch v%kib_ver%
     ) else if "!args!"=="-p" (
         echo !PROCESSOR_ARCHITECTURE!
     ) else (
@@ -372,9 +378,9 @@ if "!command!"=="" (
             ) else (
                 echo Checking databases...
                 rem Check if https://codeberg.org/Kali-in-Batch/pkg/src/branch/main/packages/!args2! exists
-                curl -s https://codeberg.org/Kali-in-Batch/pkg/src/branch/main/packages/!args2! >nul 2>&1
+                curl -# https://codeberg.org/Kali-in-Batch/pkg/src/branch/main/packages/!args2! >nul 2>&1
                 rem Check if output of https://codeberg.org/Kali-in-Batch/pkg/raw/branch/main/packages/!args2!/!args2!.sh is "Not found."
-                curl -s https://codeberg.org/Kali-in-Batch/pkg/raw/branch/main/packages/!args2!/!args2!.sh >"%install_part%\tmp\output.txt"
+                curl -# https://codeberg.org/Kali-in-Batch/pkg/raw/branch/main/packages/!args2!/!args2!.sh >"%install_part%\tmp\output.txt"
                 set /p output=<"%install_part%\tmp\output.txt"
                 if "!output!"=="Not found." (
                     echo Package !args2! is not available.
@@ -383,7 +389,7 @@ if "!command!"=="" (
                 )
                 echo Package !args2! is available.
                 rem Download package
-                curl -s https://codeberg.org/Kali-in-Batch/pkg/raw/branch/main/packages/!args2!/!args2!.sh >"%install_part%\bin\!args2!.sh"
+                curl -# https://codeberg.org/Kali-in-Batch/pkg/raw/branch/main/packages/!args2!/!args2!.sh >"%install_part%\bin\!args2!.sh"
                 echo Package !args2! installed. Execute it by running: exec !args2!
                 del "%install_part%\tmp\output.txt"
             )
@@ -411,7 +417,7 @@ if "!command!"=="" (
                 echo Package !args2! is installed.
                 echo Checking databases...
                 echo Upgrading package...
-                curl -s https://codeberg.org/Kali-in-Batch/pkg/raw/branch/main/packages/!args2!/!args2!.sh >"%install_part%\bin\!args2!.sh"
+                curl -# https://codeberg.org/Kali-in-Batch/pkg/raw/branch/main/packages/!args2!/!args2!.sh >"%install_part%\bin\!args2!.sh"
                 echo Package !args2! upgraded.
             ) else (
                 echo Package !args2! is not installed.
@@ -446,7 +452,13 @@ if "!command!"=="" (
 ) else if "!command!"=="help" (
     goto help
 ) else if  "!command!"=="wipe-rootfs" (
-	goto wipe
+    set /p confirmation=Are you sure you want to wipe the rootfs? THIS WILL DELETE ALL YOUR KALI IN BATCH DATA! (y/N^)
+    if "!confirmation!"=="y" (
+        goto wipe
+    ) else (
+        echo Operation cancelled.
+        goto shell
+    )
 ) else if "!command!"=="exec" (
     if "!args!"=="" (
         echo Usage: exec package
@@ -500,7 +512,7 @@ echo    -- ls usage: ls
 echo cat - display file contents
 echo    -- cat usage: cat yourfile
 echo echo - print text to the console
-echo    -- echo usage: echo "yourtext"
+echo    -- echo usage: echo your text
 echo cd - change directory
 echo    -- cd usage: cd yourdirectory
 echo clear - clear the screen
