@@ -29,3 +29,7 @@ DO NOT MOVE THE FILE OUTSIDE THE SRC DIRECTORY.
 - [x] Text editing with vim or any other text editor
 - [x] Terminal control with clear, exit, and help
 - [x] System information with uname and whoami
+
+---
+
+This project is **NOT** associated with Kali Linux, it's contributors and Offensive Security.
