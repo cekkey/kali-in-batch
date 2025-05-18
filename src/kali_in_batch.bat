@@ -534,6 +534,57 @@ if "!command!"=="" (
             echo Package !args! is not installed.
         )
     )
+) else if "!command!"=="vim" (
+    if "!args!"=="" (
+        echo Usage: vim yourfile
+    ) else (
+        rem Block Windows paths
+        if "!args:~1,1!"==":" (
+            echo Possible Linux file system escape attempt blocked.
+            goto shell
+        )
+        rem Check if vim is installed
+        where vim >nul 2>&1
+        if !errorlevel!==0 (
+            echo Vim is installed.
+            rem Convert Linux path to Windows path
+            set linux_path=!args!
+            rem Check if the path starts with a slash
+            if "!linux_path:~0,1!"=="/" (
+                rem Replace it with the drive letter
+            )
+            set "args=!install_part!\!args:~1!"
+            rem Replace back slashes with forward slashes
+            set "args=!args:/=\!"
+            rem Replace forward slashes with backslashes
+            set "args=!args:\=/!"
+            rem Run vim
+            vim !args!
+        ) else (
+            echo Vim is not installed. Checking for neovim...
+            rem Check if neovim is installed
+            where nvim >nul 2>&1
+            if !errorlevel!==0 (
+                echo Neovim is installed.
+                rem Convert Linux path to Windows path
+                set linux_path=!args!
+                rem Check if the path starts with a slash
+                if "!linux_path:~0,1!"=="/" (
+                    rem Replace it with the drive letter
+                    set "args=!install_part!\!args:~1!"
+                )
+                rem Replace back slashes with forward slashes
+                set "args=!args:/=\!"
+                rem Replace forward slashes with backslashes
+                set "args=!args:\=/!"
+                rem Run neovim
+                nvim !args!
+            ) else (
+                echo Neither vim nor neovim is installed!!
+                goto shell
+            )
+        )
+    )
 ) else (
     cd !cd! >nul 2>&1
     call :run_bash_fallback 2>&1
