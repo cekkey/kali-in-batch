@@ -298,6 +298,14 @@ if "!command!"=="" (
         goto shell
     ) else if "!args!"=="../" (
         cd ..
+    ) else if "!args!"=="/tmp" (
+        cd /d "!install_part!\tmp"
+    ) else if "!args!"=="/bin" (
+        cd /d "!install_part!\bin"
+    ) else if "!args!"=="/home" (
+        cd /d "!install_part!\home"
+    ) else if "!args!"=="/home/!username!" (
+        cd /d "!install_part!\home\!username!"
     ) else if exist "!args!" (
         cd /d "!args!"
     ) else (
