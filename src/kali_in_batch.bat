@@ -120,7 +120,7 @@ if exist "%APPDATA%\kali_in_batch\VERSION.txt" (
     del "%APPDATA%\kali_in_batch\VERSION.txt"
 )
 rem Create VERSION.txt
-echo 1.0.0>"%APPDATA%\kali_in_batch\VERSION.txt"
+echo 1.0.1>"%APPDATA%\kali_in_batch\VERSION.txt"
 echo Starting services...
 timeout /t 1 /nobreak >nul
 where nmap >nul 2>nul
@@ -360,7 +360,7 @@ if "!command!"=="" (
     )
 ) else if "!command!"=="uname" (
     rem Get version info from %APPDATA%%\kali_in_batch\VERSION.txt
-    for /f "tokens=1* delims= " %%a in ("%APPDATA%\kali_in_batch\VERSION.txt") do (
+    for /f "tokens=1* delims= " %%a in ('type "%APPDATA%\kali_in_batch\VERSION.txt"') do (
         set "kib_ver=%%a"
     )
     if "!args!"=="-a" (
