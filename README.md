@@ -10,7 +10,7 @@ A simulated Kali Linux environment in batch.
 
 ### Usage
 
-Run `kali_in_batch.bat`.
+Run `kali_in_batch.bat` inside the src directory.
 
 ### Features
 
