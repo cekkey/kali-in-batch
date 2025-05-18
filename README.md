@@ -10,7 +10,15 @@ A simulated Kali Linux environment in batch.
 
 ### Usage
 
-Run `kali_in_batch.bat` inside the src directory.
+Clone the repository:
+```bash
+git clone https://codeberg.org/Kali-in-Batch/kali-in-batch.git
+```
+```bash	
+cd kali-in-batch
+```
+
+Then, run `kali_in_batch.bat` inside the src directory.
 DO NOT MOVE THE FILE OUTSIDE THE SRC DIRECTORY.
 
 ### Features
