@@ -89,7 +89,6 @@ if not exist "%APPDATA%\kali_in_batch" (
     mkdir "%APPDATA%\kali_in_batch" >nul 2>nul
     @echo on
     echo !install_part!>"%APPDATA%\kali_in_batch\install_part.txt"
-    echo 1.0.0>"%APPDATA%\kali_in_batch\VERSION.txt"
     @echo off
 	choice /c 12 /m "Done. Press 1 to continue booting, or press 2 to delete your kali rootfs and exit."
 	if errorlevel 2 goto wipe
@@ -116,6 +115,12 @@ exit
 
 
 :boot
+rem Check if VERSION.txt exists and delete it if it does
+if exist "%APPDATA%\kali_in_batch\VERSION.txt" (
+    del "%APPDATA%\kali_in_batch\VERSION.txt"
+)
+rem Create VERSION.txt
+echo 1.0.0>"%APPDATA%\kali_in_batch\VERSION.txt"
 echo Starting services...
 timeout /t 1 /nobreak >nul
 where nmap >nul 2>nul
@@ -152,6 +157,20 @@ if !errorlevel! neq 0 (
     exit
 )
 echo Checking for updates...
+curl -s https://codeberg.org/Kali-in-Batch/kali-in-batch/raw/branch/master/VERSION.txt >"!install_part!\tmp\VERSION.txt"
+rem Check if the version is the same
+set /p remote_version=<"!install_part!\tmp\VERSION.txt"
+set /p local_version=<"%APPDATA%\kali_in_batch\VERSION.txt"
+if !remote_version! neq !local_version! (
+    echo [33mNew version available![0m
+    echo [33mRemote version: !remote_version![0m
+    echo [33mLocal version: !local_version![0m
+    echo Please run git pull in your cloned repository to update.
+) else (
+    echo [32mYou are running the latest version.[0m
+    echo [32mRemote version: !remote_version![0m
+    echo [32mLocal version: !local_version![0m
+)
 echo Done.
 timeout /t 1 /nobreak >nul
 echo.
