@@ -32,7 +32,7 @@ if not exist "%APPDATA%\kali_in_batch" (
         )
         echo Testing if it is empty...
         timeout /t 1 /nobreak >nul
-        :: check if it is empty
+        rem Check if it is empty
         dir "!install_part!\" >nul 2>nul
         if !errorlevel! neq 1 (
             echo Error: Drive is not empty. Please try again.
@@ -93,7 +93,7 @@ if not exist "%APPDATA%\kali_in_batch" (
 	choice /c 12 /m "Done. Press 1 to continue booting, or press 2 to delete your kali rootfs and exit."
 	if errorlevel 2 goto wipe
 )
-:: Set install part to the txt file created in installer
+rem Set install part to the txt file created in installer
 set /p install_part=<"%APPDATA%\kali_in_batch\install_part.txt"
 echo DEBUG: install_part=!install_part!
 pause
@@ -130,7 +130,7 @@ if !errorlevel! neq 0 (
     echo You can install it from https://www.vim.org/download.php
 )
 
-:: Registry interactions in a batch file may make your Antivirus flag it.
+rem Registry interactions in a batch file may make your Antivirus flag it.
 for /f "tokens=2,*" %%a in ('reg query "HKCU\Software\GitForWindows" /v InstallPath 2^>nul') do set GIT_PATH=%%b
 
 if not defined GIT_PATH (
@@ -158,7 +158,7 @@ echo.
 goto startup
 
 :startup
-:: navigate to home directory
+rem navigate to home directory
 cd /d "!install_part!\home\!username!"
 if %errorlevel% neq 0 (
     echo error
@@ -216,9 +216,9 @@ if !current_dir!==!home_dir! (
 ) else (
     set current_dir=!cd!
 )
-:: Replace backslashes with forward slashes in !current_dir!
+rem Replace backslashes with forward slashes in !current_dir!
 set current_dir=!current_dir:\=/!
-:: Replace drive letters with nothing in !current_dir!
+rem Replace drive letters with nothing in !current_dir!
 set current_dir=!current_dir:C:=!
 set current_dir=!current_dir:D:=!
 set current_dir=!current_dir:E:=!
@@ -247,7 +247,7 @@ set current_dir=!current_dir:Z:=!
 echo [32m╔══([34m!username!@!COMPUTERNAME![0m[32m)-[!current_dir!] [0m
 set /p command=[32m╚══[34m$ [0m[0m
 
-:: Useful for later
+rem Useful for later
 for /f "tokens=1* delims= " %%a in ("!command!") do (
     set "command=%%a"
     set "remaining=%%b"
@@ -314,6 +314,7 @@ if "!command!"=="" (
     if "!args!"=="" (
         cd /d "!home_dir!"
     ) else if exist "!args!" (
+        rem Only allow Linux paths for cd for better emulation.
         if "!args:~1,1!"==":" (
             echo Possible Linux file system escape attempt blocked.
             goto shell
@@ -370,9 +371,9 @@ if "!command!"=="" (
                 echo Package !args2! is already installed.
             ) else (
                 echo Checking databases...
-                :: Check if https://codeberg.org/Kali-in-Batch/pkg/src/branch/main/packages/!args2! exists
+                rem Check if https://codeberg.org/Kali-in-Batch/pkg/src/branch/main/packages/!args2! exists
                 curl -s https://codeberg.org/Kali-in-Batch/pkg/src/branch/main/packages/!args2! >nul 2>&1
-                :: Check if output of https://codeberg.org/Kali-in-Batch/pkg/raw/branch/main/packages/!args2!/!args2!.sh is "Not found."
+                rem Check if output of https://codeberg.org/Kali-in-Batch/pkg/raw/branch/main/packages/!args2!/!args2!.sh is "Not found."
                 curl -s https://codeberg.org/Kali-in-Batch/pkg/raw/branch/main/packages/!args2!/!args2!.sh >"%install_part%\tmp\output.txt"
                 set /p output=<"%install_part%\tmp\output.txt"
                 if "!output!"=="Not found." (
@@ -381,7 +382,7 @@ if "!command!"=="" (
                     goto shell
                 )
                 echo Package !args2! is available.
-                :: Download package
+                rem Download package
                 curl -s https://codeberg.org/Kali-in-Batch/pkg/raw/branch/main/packages/!args2!/!args2!.sh >"%install_part%\bin\!args2!.sh"
                 echo Package !args2! installed. Execute it by running: exec !args2!
                 del "%install_part%\tmp\output.txt"
@@ -451,7 +452,7 @@ if "!command!"=="" (
         echo Usage: exec package
     ) else (
         if exist "!install_part!\bin\!args!.sh" (
-            :: Convert !install_part!\bin\!args!.sh to a unix path
+            rem Convert !install_part!\bin\!args!.sh to a unix path
             set unix_bin_path=!install_part!\bin\!args!.sh
             set unix_bin_path=!unix_bin_path:\=/!
             set unix_bin_path=!unix_bin_path:C:=/c!
@@ -478,7 +479,7 @@ if "!command!"=="" (
             set unix_bin_path=!unix_bin_path:X:=/x!
             set unix_bin_path=!unix_bin_path:Y:=/y!
             set unix_bin_path=!unix_bin_path:Z:=/z!
-            :: Run the script
+            rem Run the script
             !bash_path! -c "source !unix_bin_path!"
         ) else (
             echo Package !args! is not installed.
@@ -543,7 +544,7 @@ echo    -- help usage: help
 goto shell
 
 :run_bash_fallback
-:: Make a Bash current dir variable, which is the Windows path converted to a Unix path.
+rem Make a Bash current dir variable, which is the Windows path converted to a Unix path.
 set bash_current_dir=!cd! >nul 2>&1
 set bash_current_dir=!cd:\=/! >nul 2>&1
 set bash_current_dir=!bash_current_dir:C:=/c! >nul 2>&1
