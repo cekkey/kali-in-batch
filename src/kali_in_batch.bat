@@ -120,7 +120,7 @@ if exist "%APPDATA%\kali_in_batch\VERSION.txt" (
     del "%APPDATA%\kali_in_batch\VERSION.txt"
 )
 rem Create VERSION.txt
-echo 1.0.1>"%APPDATA%\kali_in_batch\VERSION.txt"
+echo 1.0.2>"%APPDATA%\kali_in_batch\VERSION.txt"
 echo Starting services...
 timeout /t 1 /nobreak >nul
 where nmap >nul 2>nul
@@ -602,4 +602,13 @@ set bash_current_dir=!bash_current_dir:W:=/w! >nul 2>&1
 set bash_current_dir=!bash_current_dir:X:=/x! >nul 2>&1
 set bash_current_dir=!bash_current_dir:Y:=/y! >nul 2>&1
 set bash_current_dir=!bash_current_dir:Z:=/z! >nul 2>&1
-!bash_path! -c "cd !bash_current_dir!; !command! !args! !args2! !args3! !args4! !args5! !args6! !args7! !args8! !args9! !args10! !args11! !args12! !args13! !args14! !args15! !args16! !args17! !args18! !args19! !args20! !args21! !args22! !args23! !args24! !args25! !args26!" 2>&1
+rem Check if command is ls or dir
+if !command!==ls (
+    rem Remove $RECYCLE.BIN and System\ Volume\ Information from the output
+    !bash_path! -c "cd !bash_current_dir!; ls !args! !args2! !args3! !args4! !args5! | grep -v '$RECYCLE.BIN' | grep -v 'System\ Volume\ Information'" 2>&1
+) else if !command!==dir (
+    !bash_path! -c "cd !bash_current_dir!; ls -a | grep -v '$RECYCLE.BIN' | grep -v 'System\ Volume\ Information'" 2>&1
+) else (
+    rem It is any other command
+    !bash_path! -c "cd !bash_current_dir!; !command! !args! !args2! !args3! !args4! !args5! !args6! !args7! !args8! !args9! !args10! !args11! !args12! !args13! !args14! !args15! !args16! !args17! !args18! !args19! !args20! !args21! !args22! !args23! !args24! !args25! !args26!" 2>&1
+)
