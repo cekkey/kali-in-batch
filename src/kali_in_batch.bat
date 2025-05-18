@@ -171,6 +171,8 @@ if !remote_version! neq !local_version! (
     echo [32mRemote version: !remote_version![0m
     echo [32mLocal version: !local_version![0m
 )
+rem DEV BRANCH FIX: Delete VERSION.txt in tmp folder
+del "!install_part!\tmp\VERSION.txt"
 echo Done.
 timeout /t 1 /nobreak >nul
 echo.
