@@ -512,7 +512,7 @@ echo ping - ping a target
 echo    -- ping usage: ping yourtarget
 echo whoami - display current user
 echo    -- whoami usage: whoami
-echo pkg - package manager (not implemented yet)
+echo pkg - package manager
 echo    -- pkg usage: pkg yourcommand yourargs
 echo mv - move a file or directory
 echo    -- mv usage: mv yourfile yourdestination
