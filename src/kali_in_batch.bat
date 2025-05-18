@@ -120,7 +120,7 @@ if exist "%APPDATA%\kali_in_batch\VERSION.txt" (
     del "%APPDATA%\kali_in_batch\VERSION.txt"
 )
 rem Create VERSION.txt
-echo 1.0.2>"%APPDATA%\kali_in_batch\VERSION.txt"
+echo 1.0.3>"%APPDATA%\kali_in_batch\VERSION.txt"
 echo Starting services...
 timeout /t 1 /nobreak >nul
 where nmap >nul 2>nul
@@ -354,10 +354,26 @@ if "!command!"=="" (
     goto shell
 ) else if "!command!"=="cat" (
     if "!args!"=="" (
-        echo Usage: cat [FILE]
+        echo No file specified.
     ) else if exist "!args!" (
-        powershell -command "Get-Content -Path '!args!' -Raw"
+        rem Only allow Linux paths for better emulation.
+        if "!args:~1,1!"==":" (
+            echo Possible Linux file system escape attempt blocked.
+            goto shell
+        )
+        set "args=!args:\=/!"
+        if "!args:~0,1!"=="/" (
+            set "args=!install_part!\!args:~1!"
+        )
+        set "args=!args:/=\!"
+        type "!args!"
+        echo.
+    ) else (
+        echo Invalid file.
     )
+    goto shell
+) else if "!command!"=="pwd" (
+    echo !current_dir!
 ) else if "!command!"=="uname" (
     rem Get version info from %APPDATA%%\kali_in_batch\VERSION.txt
     for /f "tokens=1* delims= " %%a in ('type "%APPDATA%\kali_in_batch\VERSION.txt"') do (
@@ -607,7 +623,7 @@ if !command!==ls (
     rem Remove $RECYCLE.BIN and System\ Volume\ Information from the output
     !bash_path! -c "cd !bash_current_dir!; ls !args! !args2! !args3! !args4! !args5! | grep -v '$RECYCLE.BIN' | grep -v 'System\ Volume\ Information'" 2>&1
 ) else if !command!==dir (
-    !bash_path! -c "cd !bash_current_dir!; ls -a | grep -v '$RECYCLE.BIN' | grep -v 'System\ Volume\ Information'" 2>&1
+    !bash_path! -c "cd !bash_current_dir!; ls !args! !args2! !args3! !args4! !args5! | grep -v '$RECYCLE.BIN' | grep -v 'System\ Volume\ Information'" 2>&1
 ) else (
     rem It is any other command
     !bash_path! -c "cd !bash_current_dir!; !command! !args! !args2! !args3! !args4! !args5! !args6! !args7! !args8! !args9! !args10! !args11! !args12! !args13! !args14! !args15! !args16! !args17! !args18! !args19! !args20! !args21! !args22! !args23! !args24! !args25! !args26!" 2>&1
