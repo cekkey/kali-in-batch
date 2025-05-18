@@ -216,6 +216,33 @@ if !current_dir!==!home_dir! (
 ) else (
     set current_dir=!cd!
 )
+:: Replace backslashes with forward slashes in !current_dir!
+set current_dir=!current_dir:\=/!
+:: Replace drive letters with nothing in !current_dir!
+set current_dir=!current_dir:C:=!
+set current_dir=!current_dir:D:=!
+set current_dir=!current_dir:E:=!
+set current_dir=!current_dir:F:=!
+set current_dir=!current_dir:G:=!
+set current_dir=!current_dir:H:=!
+set current_dir=!current_dir:I:=!
+set current_dir=!current_dir:J:=!
+set current_dir=!current_dir:K:=!
+set current_dir=!current_dir:L:=!
+set current_dir=!current_dir:M:=!
+set current_dir=!current_dir:N:=!
+set current_dir=!current_dir:O:=!
+set current_dir=!current_dir:P:=!
+set current_dir=!current_dir:Q:=!
+set current_dir=!current_dir:R:=!
+set current_dir=!current_dir:S:=!
+set current_dir=!current_dir:T:=!
+set current_dir=!current_dir:U:=!
+set current_dir=!current_dir:V:=!
+set current_dir=!current_dir:W:=!
+set current_dir=!current_dir:X:=!
+set current_dir=!current_dir:Y:=!
+set current_dir=!current_dir:Z:=!
 
 echo [32m╔══([34m!username!@!COMPUTERNAME![0m[32m)-[!current_dir!] [0m
 set /p command=[32m╚══[34m$ [0m[0m
@@ -285,30 +312,17 @@ if "!command!"=="" (
     goto shell
 ) else if "!command!"=="cd" (
     if "!args!"=="" (
-        cd /d "!home_dir!"
-    ) else if "!args!"=="~" (
-        cd /d "!home_dir!"
-    ) else if "!args!"==".." (
-        cd ..
-    ) else if "!args!"=="/" (
-        cd /d "!install_part!"
-    ) else if "!args!"=="~/" (
-        cd /d "!home_dir!"
-    ) else if "!args!"=="./" (
-        goto shell
-    ) else if "!args!"=="../" (
-        cd ..
-    ) else if "!args!"=="/tmp" (
-        cd /d "!install_part!\tmp"
-    ) else if "!args!"=="/bin" (
-        cd /d "!install_part!\bin"
-    ) else if "!args!"=="/home" (
-        cd /d "!install_part!\home"
-    ) else if "!args!"=="/home/!username!" (
-        cd /d "!install_part!\home\!username!"
+        echo Usage: cd [DIRECTORY]
     ) else if exist "!args!" (
-        cd /d "!args!"
-    ) else (
+        if "!args:~1,1!"==":" (
+            echo Please use a valid Linux path.
+            goto shell
+        )
+        set "args=!args:\=/!"
+        if "!args:~0,1!"=="/" (
+            set "args=!install_part!\!args:~1!"
+        )
+        set "args=!args:/=\!"
         cd /d "!args!"
     )
     goto shell
@@ -437,6 +451,7 @@ if "!command!"=="" (
             set unix_bin_path=!install_part!\bin\!args!.sh
             set unix_bin_path=!unix_bin_path:\=/!
             set unix_bin_path=!unix_bin_path:C:=/c!
+            set unix_bin_path=!unix_bin_path:D:=/d!
             set unix_bin_path=!unix_bin_path:E:=/e!
             set unix_bin_path=!unix_bin_path:F:=/f!
             set unix_bin_path=!unix_bin_path:G:=/g!
