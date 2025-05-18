@@ -318,7 +318,6 @@ if "!command!"=="" (
     )
 ) else if "!command!"=="uname" (
     if "!args!"=="-a" (
-        echo Version: Kali Linux in Batch version 1.0.0
         for /f "tokens=4-5 delims= " %%a in ('ver') do echo OS: Windows %%a %%b
         echo Kernel: !os!
         echo Architecture: !PROCESSOR_ARCHITECTURE!
@@ -327,12 +326,9 @@ if "!command!"=="" (
         echo Options:
         echo -a, --all    print all information
         echo --help      display this help message
-        echo --version  display version information
         echo -p, --processor  display processor type
         echo -o, --operating-system  display operating system name
         echo {no option}    print kernel name
-    ) else if "!args!"=="--version" (
-        echo Kali Linux in Batch version 1.0.0
     ) else if "!args!"=="-o" (
         for /f "tokens=4-5 delims= " %%a in ('ver') do echo Windows %%a %%b
     ) else if "!args!"=="-p" (
