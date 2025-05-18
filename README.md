@@ -32,4 +32,4 @@ DO NOT MOVE THE FILE OUTSIDE THE SRC DIRECTORY.
 
 ---
 
-This project is **NOT** associated with Kali Linux, it's contributors and Offensive Security.
+This project is **NOT** associated with Kali Linux or any of it's contributors.
