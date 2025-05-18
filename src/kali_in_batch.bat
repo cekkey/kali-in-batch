@@ -312,10 +312,10 @@ if "!command!"=="" (
     goto shell
 ) else if "!command!"=="cd" (
     if "!args!"=="" (
-        echo Usage: cd [DIRECTORY]
+        cd /d "!home_dir!"
     ) else if exist "!args!" (
         if "!args:~1,1!"==":" (
-            echo Please use a valid Linux path.
+            echo Possible Linux file system escape attempt blocked.
             goto shell
         )
         set "args=!args:\=/!"
@@ -324,6 +324,10 @@ if "!command!"=="" (
         )
         set "args=!args:/=\!"
         cd /d "!args!"
+    ) else if "!args!"=="~" (
+        cd /d "!home_dir!"
+    ) else (
+        echo Invalid directory.
     )
     goto shell
 ) else if "!command!"=="cat" (
