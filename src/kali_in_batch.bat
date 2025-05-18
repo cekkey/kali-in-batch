@@ -334,7 +334,7 @@ if "!command!"=="" (
     echo !username!
 ) else if "!command!"=="pkg" (
     if "!args!"=="" (
-        echo Usage: pkg (install/remove/upgrade/search^)
+        echo Usage: pkg (install/remove/upgrade/search/list^)
     ) else if "!args!"=="install" (
         if "!args2!"=="" (
             echo Usage: pkg install package
@@ -394,6 +394,12 @@ if "!command!"=="" (
         echo Press any key to open the package database...
         pause >nul
         start https://codeberg.org/Kali-in-Batch/pkg/src/branch/main/packages/
+    ) else if "!args!"=="list" (
+        for /f "delims= " %%a in ('dir "%install_part%\bin" /b') do (
+            set "filename=%%a"
+            set "filename=!filename:.sh=!"
+            echo !filename!
+        )
     )
     goto shell
 ) else if "!command!"=="new-session" (
