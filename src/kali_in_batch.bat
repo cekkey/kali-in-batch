@@ -417,18 +417,18 @@ if "!command!"=="" (
                 rem Check if https://codeberg.org/Kali-in-Batch/pkg/src/branch/main/packages/!args2! exists
                 curl -# https://codeberg.org/Kali-in-Batch/pkg/src/branch/main/packages/!args2! >nul 2>&1
                 rem Check if output of https://codeberg.org/Kali-in-Batch/pkg/raw/branch/main/packages/!args2!/!args2!.sh is "Not found."
-                curl -# https://codeberg.org/Kali-in-Batch/pkg/raw/branch/main/packages/!args2!/!args2!.sh >"%install_part%\tmp\output.txt"
-                set /p output=<"%install_part%\tmp\output.txt"
+                curl -# https://codeberg.org/Kali-in-Batch/pkg/raw/branch/main/packages/!args2!/!args2!.sh >"!install_part!\tmp\output.txt"
+                set /p output=<"!install_part!\tmp\output.txt"
                 if "!output!"=="Not found." (
                     echo Package !args2! is not available.
-                    del "%install_part%\tmp\output.txt"
+                    del "!install_part!\tmp\output.txt"
                     goto shell
                 )
                 echo Package !args2! is available.
                 rem Download package
-                curl -# https://codeberg.org/Kali-in-Batch/pkg/raw/branch/main/packages/!args2!/!args2!.sh >"%install_part%\bin\!args2!.sh"
+                curl -# https://codeberg.org/Kali-in-Batch/pkg/raw/branch/main/packages/!args2!/!args2!.sh >"!install_part!\bin\!args2!.sh"
                 echo Package !args2! installed. Execute it by running: exec !args2!
-                del "%install_part%\tmp\output.txt"
+                del "!install_part!\tmp\output.txt"
             )
         )
     ) else if "!args!"=="remove" (
@@ -452,10 +452,24 @@ if "!command!"=="" (
             echo Checking if package !args2! is installed...
             if exist "!install_part!\bin\!args2!.sh" (
                 echo Package !args2! is installed.
-                echo Checking databases...
-                echo Upgrading package...
-                curl -# https://codeberg.org/Kali-in-Batch/pkg/raw/branch/main/packages/!args2!/!args2!.sh >"%install_part%\bin\!args2!.sh"
-                echo Package !args2! upgraded.
+                echo Checking if package is not up to date...
+                rem Put the output of https://codeberg.org/Kali-in-Batch/pkg/raw/branch/main/packages/!args2!/!args2!.sh in /tmp/output.txt
+                if exist "!install_part!\tmp\output.txt" (
+                    del "!install_part!\tmp\output.txt"
+                )
+                curl -# https://codeberg.org/Kali-in-Batch/pkg/raw/branch/main/packages/!args2!/!args2!.sh >"!install_part!\tmp\output.txt"
+                set /p output=<"!install_part!\tmp\output.txt"
+                set /p local_package_code=<"!install_part!\bin\!args2!.sh"
+                rem Check if current package code is the same as the latest version
+                if "!output!"=="!local_package_code!" (
+                    echo Package !args2! is up to date.
+                    goto shell
+                ) else (
+                    echo Upgrading package...
+                    curl -# https://codeberg.org/Kali-in-Batch/pkg/raw/branch/main/packages/!args2!/!args2!.sh >"!install_part!\bin\!args2!.sh"
+                    echo Package !args2! upgraded.
+                    del "!install_part!\tmp\output.txt"
+                )
             ) else (
                 echo Package !args2! is not installed.
             )
@@ -465,7 +479,7 @@ if "!command!"=="" (
         pause >nul
         start https://codeberg.org/Kali-in-Batch/pkg/src/branch/main/packages/
     ) else if "!args!"=="list" (
-        for /f "delims= " %%a in ('dir "%install_part%\bin" /b') do (
+        for /f "delims= " %%a in ('dir "!install_part!\bin" /b') do (
             set "filename=%%a"
             set "filename=!filename:.sh=!"
             echo !filename!
@@ -673,9 +687,376 @@ set bash_current_dir=!bash_current_dir:Y:=/y! >nul 2>&1
 set bash_current_dir=!bash_current_dir:Z:=/z! >nul 2>&1
 rem Check if command is ls or dir
 if !command!==ls (
+    rem Check if args starts with /
+    if "!args:~0,1!"=="/" (
+        rem Replace that with drive letter
+        set "args=!install_part!\!args:~1!"
+        rem Convert drive letter to git bash path
+        set "args=!args:C:=/c/!"
+        set "args=!args:D:=/d/!"
+        set "args=!args:E:=/e/!"
+        set "args=!args:F:=/f/!"
+        set "args=!args:G:=/g/!"
+        set "args=!args:H:=/h/!"
+        set "args=!args:I:=/i/!"
+        set "args=!args:J:=/j/!"
+        set "args=!args:K:=/k/!"
+        set "args=!args:L:=/l/!"
+        set "args=!args:M:=/m/!"
+        set "args=!args:N:=/n/!"
+        set "args=!args:O:=/o/!"
+        set "args=!args:P:=/p/!"
+        set "args=!args:Q:=/q/!"
+        set "args=!args:R:=/r/!"
+        set "args=!args:S:=/s/!"
+        set "args=!args:T:=/t/!"
+        set "args=!args:U:=/u/!"
+        set "args=!args:V:=/v/!"
+        set "args=!args:W:=/w/!"
+        set "args=!args:X:=/x/!"
+        set "args=!args:Y:=/y/!"
+        set "args=!args:Z:=/z/!"
+    )
+    rem Check if args2 starts with /
+    if "!args2:~0,1!"=="/" (
+        rem Replace that with drive letter
+        set "args2=!install_part!\!args2:~1!"
+        rem Convert drive letter to git bash path
+        set "args2=!args2:C:=/c/!"
+        set "args2=!args2:D:=/d/!"
+        set "args2=!args2:E:=/e/!"
+        set "args2=!args2:F:=/f/!"
+        set "args2=!args2:G:=/g/!"
+        set "args2=!args2:H:=/h/!"
+        set "args2=!args2:I:=/i/!"
+        set "args2=!args2:J:=/j/!"
+        set "args2=!args2:K:=/k/!"
+        set "args2=!args2:L:=/l/!"
+        set "args2=!args2:M:=/m/!"
+        set "args2=!args2:N:=/n/!"
+        set "args2=!args2:O:=/o/!"
+        set "args2=!args2:P:=/p/!"
+        set "args2=!args2:Q:=/q/!"
+        set "args2=!args2:R:=/r/!"
+        set "args2=!args2:S:=/s/!"
+        set "args2=!args2:T:=/t/!"
+        set "args2=!args2:U:=/u/!"
+        set "args2=!args2:V:=/v/!"
+        set "args2=!args2:W:=/w/!"
+        set "args2=!args2:X:=/x/!"
+        set "args2=!args2:Y:=/y/!"
+        set "args2=!args2:Z:=/z/!"
+    )
+    rem Check if args3 starts with /
+    if "!args3:~0,1!"=="/" (
+        rem Replace that with drive letter
+        set "args3=!install_part!\!args3:~1!"
+        rem Convert drive letter to git bash path
+        set "args3=!args3:C:=/c/!"
+        set "args3=!args3:D:=/d/!"   
+        set "args3=!args3:E:=/e/!"
+        set "args3=!args3:F:=/f/!"
+        set "args3=!args3:G:=/g/!"
+        set "args3=!args3:H:=/h/!"
+        set "args3=!args3:I:=/i/!"
+        set "args3=!args3:J:=/j/!"
+        set "args3=!args3:K:=/k/!"
+        set "args3=!args3:L:=/l/!"
+        set "args3=!args3:M:=/m/!"
+        set "args3=!args3:N:=/n/!"
+        set "args3=!args3:O:=/o/!"
+        set "args3=!args3:P:=/p/!"
+        set "args3=!args3:Q:=/q/!"
+        set "args3=!args3:R:=/r/!"
+        set "args3=!args3:S:=/s/!"
+        set "args3=!args3:T:=/t/!"
+        set "args3=!args3:U:=/u/!"
+        set "args3=!args3:V:=/v/!"
+        set "args3=!args3:W:=/w/!"
+        set "args3=!args3:X:=/x/!"
+        set "args3=!args3:Y:=/y/!"
+        set "args3=!args3:Z:=/z/!"
+    )
+    rem Check if args4 starts with /
+    if "!args4:~0,1!"=="/" (
+        rem Replace that with drive letter
+        set "args4=!install_part!\!args4:~1!"
+        rem Convert drive letter to git bash path
+        set "args4=!args4:C:=/c/!"
+        set "args4=!args4:D:=/d/!"
+        set "args4=!args4:E:=/e/!"
+        set "args4=!args4:F:=/f/!"
+        set "args4=!args4:G:=/g/!"
+        set "args4=!args4:H:=/h/!"
+        set "args4=!args4:I:=/i/!"
+        set "args4=!args4:J:=/j/!"
+        set "args4=!args4:K:=/k/!"
+        set "args4=!args4:L:=/l/!"
+        set "args4=!args4:M:=/m/!"
+        set "args4=!args4:N:=/n/!"
+        set "args4=!args4:O:=/o/!"
+        set "args4=!args4:P:=/p/!"
+        set "args4=!args4:Q:=/q/!"
+        set "args4=!args4:R:=/r/!"
+        set "args4=!args4:S:=/s/!"
+        set "args4=!args4:T:=/t/!"
+        set "args4=!args4:U:=/u/!"
+        set "args4=!args4:V:=/v/!"
+        set "args4=!args4:W:=/w/!"
+        set "args4=!args4:X:=/x/!"
+        set "args4=!args4:Y:=/y/!"
+        set "args4=!args4:Z:=/z/!"
+    )
+    rem Check if args5 starts with /
+    if "!args5:~0,1!"=="/" (
+        rem Replace that with drive letter
+        set "args5=!install_part!\!args5:~1!"
+        rem Convert drive letter to git bash path
+        set "args5=!args5:C:=/c/!"
+        set "args5=!args5:D:=/d/!"
+        set "args5=!args5:E:=/e/!"
+        set "args5=!args5:F:=/f/!"
+        set "args5=!args5:G:=/g/!"
+        set "args5=!args5:H:=/h/!"
+        set "args5=!args5:I:=/i/!"
+        set "args5=!args5:J:=/j/!"
+        set "args5=!args5:K:=/k/!"
+        set "args5=!args5:L:=/l/!"
+        set "args5=!args5:M:=/m/!"
+        set "args5=!args5:N:=/n/!"
+        set "args5=!args5:O:=/o/!"
+        set "args5=!args5:P:=/p/!"
+        set "args5=!args5:Q:=/q/!"
+        set "args5=!args5:R:=/r/!"
+        set "args5=!args5:S:=/s/!"
+        set "args5=!args5:T:=/t/!"
+        set "args5=!args5:U:=/u/!"
+        set "args5=!args5:V:=/v/!"
+        set "args5=!args5:W:=/w/!"
+        set "args5=!args5:X:=/x/!"
+        set "args5=!args5:Y:=/y/!"
+        set "args5=!args5:Z:=/z/!"
+    )
+
+    rem Check if any args contain ~ and if so, display the message Not supported
+    for /f "tokens=* delims=*" %%a in ("!args!") do (
+        if "%%a"=="~" (
+            echo Not supported
+            goto shell
+        )
+    )
+    for /f "tokens=* delims=*" %%a in ("!args2!") do (
+        if "%%a"=="~" (
+            echo Not supported
+            goto shell
+        )
+    )
+    for /f "tokens=* delims=*" %%a in ("!args3!") do (
+        if "%%a"=="~" (
+            echo Not supported
+            goto shell
+        )
+    )
+    for /f "tokens=* delims=*" %%a in ("!args4!") do (
+        if "%%a"=="~" (
+            echo Not supported
+            goto shell
+        )
+    )
+    for /f "tokens=* delims=*" %%a in ("!args5!") do (
+        if "%%a"=="~" (
+            echo Not supported
+            goto shell
+        )
+    )
+
     rem Remove $RECYCLE.BIN and System\ Volume\ Information from the output
     !bash_path! -c "cd !bash_current_dir!; ls !args! !args2! !args3! !args4! !args5! | grep -v '$RECYCLE.BIN' | grep -v 'System\ Volume\ Information'" 2>&1
 ) else if !command!==dir (
+    rem Check if args starts with /
+    if "!args:~0,1!"=="/" (
+        rem Replace that with drive letter
+        set "args=!install_part!\!args:~1!"
+        rem Convert drive letter to git bash path
+        set "args=!args:C:=/c/!"
+        set "args=!args:D:=/d/!"
+        set "args=!args:E:=/e/!"
+        set "args=!args:F:=/f/!"
+        set "args=!args:G:=/g/!"
+        set "args=!args:H:=/h/!"
+        set "args=!args:I:=/i/!"
+        set "args=!args:J:=/j/!"
+        set "args=!args:K:=/k/!"
+        set "args=!args:L:=/l/!"
+        set "args=!args:M:=/m/!"
+        set "args=!args:N:=/n/!"
+        set "args=!args:O:=/o/!"
+        set "args=!args:P:=/p/!"
+        set "args=!args:Q:=/q/!"
+        set "args=!args:R:=/r/!"
+        set "args=!args:S:=/s/!"
+        set "args=!args:T:=/t/!"
+        set "args=!args:U:=/u/!"
+        set "args=!args:V:=/v/!"
+        set "args=!args:W:=/w/!"
+        set "args=!args:X:=/x/!"
+        set "args=!args:Y:=/y/!"
+        set "args=!args:Z:=/z/!"
+    )
+    rem Check if args2 starts with /
+    if "!args2:~0,1!"=="/" (
+        rem Replace that with drive letter
+        set "args2=!install_part!\!args2:~1!"
+        rem Convert drive letter to git bash path
+        set "args2=!args2:C:=/c/!"
+        set "args2=!args2:D:=/d/!"
+        set "args2=!args2:E:=/e/!"
+        set "args2=!args2:F:=/f/!"
+        set "args2=!args2:G:=/g/!"
+        set "args2=!args2:H:=/h/!"
+        set "args2=!args2:I:=/i/!"
+        set "args2=!args2:J:=/j/!"
+        set "args2=!args2:K:=/k/!"
+        set "args2=!args2:L:=/l/!"
+        set "args2=!args2:M:=/m/!"
+        set "args2=!args2:N:=/n/!"
+        set "args2=!args2:O:=/o/!"
+        set "args2=!args2:P:=/p/!"
+        set "args2=!args2:Q:=/q/!"
+        set "args2=!args2:R:=/r/!"
+        set "args2=!args2:S:=/s/!"
+        set "args2=!args2:T:=/t/!"
+        set "args2=!args2:U:=/u/!"
+        set "args2=!args2:V:=/v/!"
+        set "args2=!args2:W:=/w/!"
+        set "args2=!args2:X:=/x/!"
+        set "args2=!args2:Y:=/y/!"
+        set "args2=!args2:Z:=/z/!"
+    )
+    rem Check if args3 starts with /
+    if "!args3:~0,1!"=="/" (
+        rem Replace that with drive letter
+        set "args3=!install_part!\!args3:~1!"
+        rem Convert drive letter to git bash path
+        set "args3=!args3:C:=/c/!"
+        set "args3=!args3:D:=/d/!"   
+        set "args3=!args3:E:=/e/!"
+        set "args3=!args3:F:=/f/!"
+        set "args3=!args3:G:=/g/!"
+        set "args3=!args3:H:=/h/!"
+        set "args3=!args3:I:=/i/!"
+        set "args3=!args3:J:=/j/!"
+        set "args3=!args3:K:=/k/!"
+        set "args3=!args3:L:=/l/!"
+        set "args3=!args3:M:=/m/!"
+        set "args3=!args3:N:=/n/!"
+        set "args3=!args3:O:=/o/!"
+        set "args3=!args3:P:=/p/!"
+        set "args3=!args3:Q:=/q/!"
+        set "args3=!args3:R:=/r/!"
+        set "args3=!args3:S:=/s/!"
+        set "args3=!args3:T:=/t/!"
+        set "args3=!args3:U:=/u/!"
+        set "args3=!args3:V:=/v/!"
+        set "args3=!args3:W:=/w/!"
+        set "args3=!args3:X:=/x/!"
+        set "args3=!args3:Y:=/y/!"
+        set "args3=!args3:Z:=/z/!"
+    )
+    rem Check if args4 starts with /
+    if "!args4:~0,1!"=="/" (
+        rem Replace that with drive letter
+        set "args4=!install_part!\!args4:~1!"
+        rem Convert drive letter to git bash path
+        set "args4=!args4:C:=/c/!"
+        set "args4=!args4:D:=/d/!"
+        set "args4=!args4:E:=/e/!"
+        set "args4=!args4:F:=/f/!"
+        set "args4=!args4:G:=/g/!"
+        set "args4=!args4:H:=/h/!"
+        set "args4=!args4:I:=/i/!"
+        set "args4=!args4:J:=/j/!"
+        set "args4=!args4:K:=/k/!"
+        set "args4=!args4:L:=/l/!"
+        set "args4=!args4:M:=/m/!"
+        set "args4=!args4:N:=/n/!"
+        set "args4=!args4:O:=/o/!"
+        set "args4=!args4:P:=/p/!"
+        set "args4=!args4:Q:=/q/!"
+        set "args4=!args4:R:=/r/!"
+        set "args4=!args4:S:=/s/!"
+        set "args4=!args4:T:=/t/!"
+        set "args4=!args4:U:=/u/!"
+        set "args4=!args4:V:=/v/!"
+        set "args4=!args4:W:=/w/!"
+        set "args4=!args4:X:=/x/!"
+        set "args4=!args4:Y:=/y/!"
+        set "args4=!args4:Z:=/z/!"
+    )
+    rem Check if args5 starts with /
+    if "!args5:~0,1!"=="/" (
+        rem Replace that with drive letter
+        set "args5=!install_part!\!args5:~1!"
+        rem Convert drive letter to git bash path
+        set "args5=!args5:C:=/c/!"
+        set "args5=!args5:D:=/d/!"
+        set "args5=!args5:E:=/e/!"
+        set "args5=!args5:F:=/f/!"
+        set "args5=!args5:G:=/g/!"
+        set "args5=!args5:H:=/h/!"
+        set "args5=!args5:I:=/i/!"
+        set "args5=!args5:J:=/j/!"
+        set "args5=!args5:K:=/k/!"
+        set "args5=!args5:L:=/l/!"
+        set "args5=!args5:M:=/m/!"
+        set "args5=!args5:N:=/n/!"
+        set "args5=!args5:O:=/o/!"
+        set "args5=!args5:P:=/p/!"
+        set "args5=!args5:Q:=/q/!"
+        set "args5=!args5:R:=/r/!"
+        set "args5=!args5:S:=/s/!"
+        set "args5=!args5:T:=/t/!"
+        set "args5=!args5:U:=/u/!"
+        set "args5=!args5:V:=/v/!"
+        set "args5=!args5:W:=/w/!"
+        set "args5=!args5:X:=/x/!"
+        set "args5=!args5:Y:=/y/!"
+        set "args5=!args5:Z:=/z/!"
+    )
+
+    rem Check if any args contain ~ and if so, display the message Not supported
+    for /f "tokens=* delims=*" %%a in ("!args!") do (
+        if "%%a"=="~" (
+            echo Not supported
+            goto shell
+        )
+    )
+    for /f "tokens=* delims=*" %%a in ("!args2!") do (
+        if "%%a"=="~" (
+            echo Not supported
+            goto shell
+        )
+    )
+    for /f "tokens=* delims=*" %%a in ("!args3!") do (
+        if "%%a"=="~" (
+            echo Not supported
+            goto shell
+        )
+    )
+    for /f "tokens=* delims=*" %%a in ("!args4!") do (
+        if "%%a"=="~" (
+            echo Not supported
+            goto shell
+        )
+    )
+    for /f "tokens=* delims=*" %%a in ("!args5!") do (
+        if "%%a"=="~" (
+            echo Not supported
+            goto shell
+        )
+    )
+
+    rem Remove $RECYCLE.BIN and System\ Volume\ Information from the output
     !bash_path! -c "cd !bash_current_dir!; ls !args! !args2! !args3! !args4! !args5! | grep -v '$RECYCLE.BIN' | grep -v 'System\ Volume\ Information'" 2>&1
 ) else if !command!==nvim (
     echo If you have neovim installed and don't have vim installed, please use the vim command instead.
