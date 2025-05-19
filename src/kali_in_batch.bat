@@ -290,6 +290,7 @@ if !current_dir!==!home_dir! (
 ) else (
     set current_dir=!cd!
 )
+title Kali in Batch - !current_dir!
 rem Replace backslashes with forward slashes in !current_dir!
 set current_dir=!current_dir:\=/!
 rem Replace drive letters with nothing in !current_dir!
@@ -460,25 +461,40 @@ if "!command!"=="" (
         if "!args2!"=="" (
             echo Usage: pkg install package
         ) else (
+            echo !COLOR_INFO!
             echo Checking if package !args2! is installed...
+            echo !COLOR_RESET!
             if exist "!install_part!\bin\!args2!.sh" (
+                echo !COLOR_ERROR!
                 echo Package !args2! is already installed.
+                echo !COLOR_RESET!
             ) else (
+                echo !COLOR_INFO!
                 echo Checking databases...
                 rem Check if https://codeberg.org/Kali-in-Batch/pkg/src/branch/main/packages/!args2! exists
                 curl -# https://codeberg.org/Kali-in-Batch/pkg/src/branch/main/packages/!args2! >nul 2>&1
                 rem Check if output of https://codeberg.org/Kali-in-Batch/pkg/raw/branch/main/packages/!args2!/!args2!.sh is "Not found."
                 curl -# https://codeberg.org/Kali-in-Batch/pkg/raw/branch/main/packages/!args2!/!args2!.sh >"!install_part!\tmp\output.txt"
+                echo !COLOR_RESET!
                 set /p output=<"!install_part!\tmp\output.txt"
                 if "!output!"=="Not found." (
+                    echo !COLOR_ERROR!
                     echo Package !args2! is not available.
+                    echo !COLOR_RESET!
                     del "!install_part!\tmp\output.txt"
                     goto shell
                 )
+                echo !COLOR_INFO!
                 echo Package !args2! is available.
+                echo !COLOR_RESET!
                 rem Download package
+                echo !COLOR_INFO!
+                echo Installing package !args2!...
                 curl -# https://codeberg.org/Kali-in-Batch/pkg/raw/branch/main/packages/!args2!/!args2!.sh >"!install_part!\bin\!args2!.sh"
+                echo !COLOR_RESET!
+                echo !COLOR_SUCCESS!
                 echo Package !args2! installed. Execute it by running: exec !args2!
+                echo !COLOR_RESET!
                 del "!install_part!\tmp\output.txt"
             )
         )
@@ -486,22 +502,33 @@ if "!command!"=="" (
         if "!args2!"=="" (
             echo Usage: pkg remove package
         ) else (
+            echo !COLOR_INFO!
             echo Checking if package !args2! is installed...
+            echo !COLOR_RESET!
             if exist "!install_part!\bin\!args2!.sh" (
+                echo !COLOR_INFO!
                 echo Package !args2! is installed.
-                echo Removing package...
+                echo Removing package !args2!...
                 del "!install_part!\bin\!args2!.sh"
+                echo !COLOR_RESET!
+                echo !COLOR_SUCCESS!
                 echo Package !args2! removed.
+                echo !COLOR_RESET!
             ) else (
+                echo !COLOR_ERROR!
                 echo Package !args2! is not installed.
+                echo !COLOR_RESET!
             )
         )
     ) else if "!args!"=="upgrade" (
         if "!args2!"=="" (
             echo Usage: pkg upgrade package
         ) else (
+            echo !COLOR_INFO!
             echo Checking if package !args2! is installed...
+            echo !COLOR_RESET!
             if exist "!install_part!\bin\!args2!.sh" (
+                echo !COLOR_INFO!
                 echo Package !args2! is installed.
                 echo Checking if package is not up to date...
                 rem Put the output of https://codeberg.org/Kali-in-Batch/pkg/raw/branch/main/packages/!args2!/!args2!.sh in /tmp/output.txt
@@ -512,17 +539,26 @@ if "!command!"=="" (
                 set /p output=<"!install_part!\tmp\output.txt"
                 set /p local_package_code=<"!install_part!\bin\!args2!.sh"
                 rem Check if current package code is the same as the latest version
+                echo !COLOR_RESET!
                 if "!output!"=="!local_package_code!" (
+                    echo !COLOR_INFO!
                     echo Package !args2! is up to date.
+                    echo !COLOR_RESET!
                     goto shell
                 ) else (
+                    echo !COLOR_INFO!
                     echo Upgrading package...
                     curl -# https://codeberg.org/Kali-in-Batch/pkg/raw/branch/main/packages/!args2!/!args2!.sh >"!install_part!\bin\!args2!.sh"
+                    echo !COLOR_RESET!
+                    echo !COLOR_SUCCESS!
                     echo Package !args2! upgraded.
                     del "!install_part!\tmp\output.txt"
+                    echo !COLOR_RESET!
                 )
             ) else (
+                echo !COLOR_ERROR!
                 echo Package !args2! is not installed.
+                echo !COLOR_RESET!
             )
         )
     ) else if "!args!"=="search" (
@@ -657,7 +693,9 @@ if "!command!"=="" (
 goto shell
 
 :help
-echo Available commands:
+echo !COLOR_ITALIC!!COLOR_INFO!!COLOR_BG_BLUE!!COLOR_UNDERLINE!Available commands:!COLOR_RESET!
+echo !COLOR_INFO!===================!COLOR_RESET!
+echo !COLOR_CYAN!
 echo pwd - print working directory
 echo    -- pwd usage: pwd
 echo ls - list files and directories
@@ -706,6 +744,9 @@ echo git - run git commands
 echo    -- git usage: git yourargs
 echo help - display this help message
 echo    -- help usage: help
+echo exec - run an installed package
+echo    -- exec usage: exec yourpackage
+echo !COLOR_RESET!
 goto shell
 
 :run_bash_fallback
