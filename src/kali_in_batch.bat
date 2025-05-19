@@ -171,7 +171,7 @@ if exist "%APPDATA%\kali_in_batch\VERSION.txt" (
     del "%APPDATA%\kali_in_batch\VERSION.txt"
 )
 rem Create VERSION.txt
-echo 1.2.1>"%APPDATA%\kali_in_batch\VERSION.txt"
+echo 1.2.2>"%APPDATA%\kali_in_batch\VERSION.txt"
 echo Starting services...
 timeout /t 1 /nobreak >nul
 where nmap >nul 2>nul
