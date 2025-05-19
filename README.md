@@ -21,6 +21,16 @@ cd kali-in-batch
 Then, run `kali_in_batch.bat` inside the src directory.
 DO NOT MOVE THE FILE OUTSIDE THE SRC DIRECTORY.
 
+Once you have set up Kali in Batch, try installing this package in the Kali in Batch shell:
+```bash
+pkg install elf-exec
+```
+This package allows you to execute Linux binaries using WSL.
+Run it:
+```bash
+exec elf-exec
+```
+
 ### Features
 
 - [x] Networking with ping and nmap
