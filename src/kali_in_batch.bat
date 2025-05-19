@@ -1,6 +1,62 @@
 @echo off
 chcp 65001 >nul
 setlocal enabledelayedexpansion
+
+rem Color Definitions
+set "COLOR_RESET=[0m"
+set "COLOR_BLACK=[30m"
+set "COLOR_RED=[31m"
+set "COLOR_GREEN=[32m"
+set "COLOR_YELLOW=[33m"
+set "COLOR_BLUE=[34m"
+set "COLOR_MAGENTA=[35m"
+set "COLOR_CYAN=[36m"
+set "COLOR_WHITE=[37m"
+set "COLOR_BRIGHT_BLACK=[90m"
+set "COLOR_BRIGHT_RED=[91m"
+set "COLOR_BRIGHT_GREEN=[92m"
+set "COLOR_BRIGHT_YELLOW=[93m"
+set "COLOR_BRIGHT_BLUE=[94m"
+set "COLOR_BRIGHT_MAGENTA=[95m"
+set "COLOR_BRIGHT_CYAN=[96m"
+set "COLOR_BRIGHT_WHITE=[97m"
+
+rem Background Colors
+set "COLOR_BG_BLACK=[40m"
+set "COLOR_BG_RED=[41m"
+set "COLOR_BG_GREEN=[42m"
+set "COLOR_BG_YELLOW=[43m"
+set "COLOR_BG_BLUE=[44m"
+set "COLOR_BG_MAGENTA=[45m"
+set "COLOR_BG_CYAN=[46m"
+set "COLOR_BG_WHITE=[47m"
+set "COLOR_BG_BRIGHT_BLACK=[100m"
+set "COLOR_BG_BRIGHT_RED=[101m"
+set "COLOR_BG_BRIGHT_GREEN=[102m"
+set "COLOR_BG_BRIGHT_YELLOW=[103m"
+set "COLOR_BG_BRIGHT_BLUE=[104m"
+set "COLOR_BG_BRIGHT_MAGENTA=[105m"
+set "COLOR_BG_BRIGHT_CYAN=[106m"
+set "COLOR_BG_BRIGHT_WHITE=[107m"
+
+rem Text Styles
+set "COLOR_BOLD=[1m"
+set "COLOR_DIM=[2m"
+set "COLOR_ITALIC=[3m"
+set "COLOR_UNDERLINE=[4m"
+set "COLOR_BLINK=[5m"
+set "COLOR_REVERSE=[7m"
+set "COLOR_HIDDEN=[8m"
+set "COLOR_STRIKETHROUGH=[9m"
+
+rem Combined Styles
+set "COLOR_ERROR=!COLOR_BRIGHT_RED!!COLOR_BOLD!"
+set "COLOR_WARNING=!COLOR_BRIGHT_YELLOW!!COLOR_BOLD!"
+set "COLOR_SUCCESS=!COLOR_BRIGHT_GREEN!!COLOR_BOLD!"
+set "COLOR_INFO=!COLOR_BRIGHT_CYAN!"
+set "COLOR_DEBUG=!COLOR_BRIGHT_MAGENTA!"
+set "COLOR_PROMPT=!COLOR_BRIGHT_BLUE!!COLOR_BOLD!"
+
 cls
 set "username=%USERNAME%"
 title Kali Linux in Batch
@@ -26,7 +82,7 @@ if not exist "%APPDATA%\kali_in_batch" (
         echo Testing if it exists...
         timeout /t 1 /nobreak >nul
         if not exist "!install_part!\" (
-            echo Error: Drive does not exist. Please try again.
+            echo !COLOR_ERROR!Error: Drive does not exist. Please try again.!COLOR_RESET!
             pause >nul
             exit
         )
@@ -35,7 +91,7 @@ if not exist "%APPDATA%\kali_in_batch" (
         rem Check if it is empty
         dir "!install_part!\" >nul 2>nul
         if !errorlevel! neq 1 (
-            echo Error: Drive is not empty. Please try again.
+            echo !COLOR_ERROR!Error: Drive is not empty. Please try again.!COLOR_RESET!
             pause >nul
             exit
         )
@@ -65,14 +121,14 @@ if not exist "%APPDATA%\kali_in_batch" (
     )
     where powershell >nul 2>nul
     if !errorlevel! neq 0 (
-        echo [31mCRITICAL ERROR: Powershell is not found. Please repair Windows installation. Your Windows installation may not be genuine.[0m
+        echo !COLOR_ERROR!CRITICAL ERROR: Powershell is not found. Please repair Windows installation. Your Windows installation may not be genuine.!COLOR_RESET!
         echo You can install a genuine Windows 11 from https://www.microsoft.com/en-us/software-download/windows11 or Windows 10 from https://www.microsoft.com/en-us/software-download/windows10.
         pause >nul
         exit
     )
     where ping >nul 2>nul
     if !errorlevel! neq 0 (
-        echo [31mCRITICAL ERROR: Ping is not found. Please repair Windows installation. Your Windows installation may not be genuine.[0m
+        echo !COLOR_ERROR!CRITICAL ERROR: Ping is not found. Please repair Windows installation. Your Windows installation may not be genuine.!COLOR_RESET!
         echo You can install a genuine Windows 11 from https://www.microsoft.com/en-us/software-download/windows11 or Windows 10 from https://www.microsoft.com/en-us/software-download/windows10.
         pause >nul
         exit
@@ -125,14 +181,14 @@ echo Starting services...
 timeout /t 1 /nobreak >nul
 where nmap >nul 2>nul
 if !errorlevel! neq 0 (
-    echo [31mError: Failed to start Nmap service: Nmap not found.[0m
+    echo !COLOR_ERROR!Error: Failed to start Nmap service: Nmap not found.!COLOR_RESET!
     echo Please install Nmap from https://nmap.org/download.html
     pause
     exit
 )
 where vim >nul 2>nul
 if !errorlevel! neq 0 (
-    echo [33mWarning: Failed to start Vim service: Vim not found. While this is not critical, it is recommended to install it for better text editing experience.[0m
+    echo !COLOR_WARNING!Warning: Failed to start Vim service: Vim not found. While this is not critical, it is recommended to install it for better text editing experience.!COLOR_RESET!
     echo You can install it from https://www.vim.org/download.php
 )
 
@@ -146,12 +202,12 @@ if not defined GIT_PATH (
 if defined GIT_PATH (
     set bash_path=!GIT_PATH!\bin\bash.exe
 ) else (
-    echo [31mError: Failed to start Git Bash service: Git for Windows not found.
+    echo !COLOR_ERROR!Error: Failed to start Git Bash service: Git for Windows not found.!COLOR_RESET!
     echo Please install Git for Windows from https://git-scm.com/downloads/win
 )
 where powershell >nul 2>nul
 if !errorlevel! neq 0 (
-    echo [31mCRITICAL ERROR: Powershell is not found. Please repair Windows installation. Your Windows installation may not be genuine.[0m
+    echo !COLOR_ERROR!CRITICAL ERROR: Powershell is not found. Please repair Windows installation. Your Windows installation may not be genuine.!COLOR_RESET!
     echo You can install a genuine Windows 11 from https://www.microsoft.com/en-us/software-download/windows11 or Windows 10 from https://www.microsoft.com/en-us/software-download/windows10.
     pause 
     exit
@@ -162,14 +218,14 @@ rem Check if the version is the same
 set /p remote_version=<"!install_part!\tmp\VERSION.txt"
 set /p local_version=<"%APPDATA%\kali_in_batch\VERSION.txt"
 if !remote_version! neq !local_version! (
-    echo [33mNew version available![0m
-    echo [33mRemote version: !remote_version![0m
-    echo [33mLocal version: !local_version![0m
+    echo !COLOR_WARNING!New version available!!COLOR_RESET!
+    echo !COLOR_WARNING!Remote version: !remote_version!!COLOR_RESET!
+    echo !COLOR_WARNING!Local version: !local_version!!COLOR_RESET!
     echo Please run git pull in your cloned repository to update.
 ) else (
-    echo [32mYou are running the latest version.[0m
-    echo [32mRemote version: !remote_version![0m
-    echo [32mLocal version: !local_version![0m
+    echo !COLOR_SUCCESS!You are running the latest version.!COLOR_RESET!
+    echo !COLOR_SUCCESS!Remote version: !remote_version!!COLOR_RESET!
+    echo !COLOR_SUCCESS!Local version: !local_version!!COLOR_RESET!
 )
 rem DEV BRANCH FIX: Delete VERSION.txt in tmp folder
 del "!install_part!\tmp\VERSION.txt"
@@ -267,8 +323,8 @@ set current_dir=!current_dir:X:=!
 set current_dir=!current_dir:Y:=!
 set current_dir=!current_dir:Z:=!
 
-echo [32m╔══([34m!username!@!COMPUTERNAME![0m[32m)-[!current_dir!] [0m
-set /p command=[32m╚══[34m$ [0m[0m
+echo !COLOR_GREEN!╔══(!COLOR_BLUE!!username!@!COMPUTERNAME!!COLOR_RESET!!COLOR_GREEN!)-[!current_dir!] !COLOR_RESET!
+set /p command=!COLOR_GREEN!╚══!COLOR_BLUE!$ !COLOR_RESET!!COLOR_RESET!
 
 rem Useful for later
 for /f "tokens=1* delims= " %%a in ("!command!") do (
