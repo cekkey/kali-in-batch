@@ -290,7 +290,9 @@ if !current_dir!==!home_dir! (
 ) else (
     set current_dir=!cd!
 )
-title Kali in Batch at !current_dir!
+
+::title Kali in Batch at !current_dir!
+
 rem Replace backslashes with forward slashes in !current_dir!
 set current_dir=!current_dir:\=/!
 rem Replace drive letters with nothing in !current_dir!
@@ -318,6 +320,8 @@ set current_dir=!current_dir:W:=!
 set current_dir=!current_dir:X:=!
 set current_dir=!current_dir:Y:=!
 set current_dir=!current_dir:Z:=!
+
+title Kali in Batch at !current_dir! & rem Moved down here to fix it being a Windows path
 
 echo !COLOR_GREEN!╔══(!COLOR_BLUE!!username!@!COMPUTERNAME!!COLOR_RESET!!COLOR_GREEN!)-[!current_dir!] !COLOR_RESET!
 set /p command=!COLOR_GREEN!╚══!COLOR_BLUE!$ !COLOR_RESET!!COLOR_RESET!
