@@ -690,6 +690,30 @@ if "!command!"=="" (
             )
         )
     )
+) else if "!command!"=="wsl" (
+    echo To use the Windows Subsystem for Linux in Kali in Batch, please run the following command in Kali in Batch:
+    echo !COLOR_BG_BLACK!!COLOR_BOLD!
+    echo pkg install elf-exec
+    echo !COLOR_RESET!
+    echo Then, run this command:
+    echo !COLOR_BG_BLACK!!COLOR_BOLD!
+    echo exec elf-exec
+    echo !COLOR_RESET!
+    wsl --version >nul 2>&1
+    if !errorlevel!==0 (
+        echo !COLOR_SUCCESS!The Windows Subsystem for Linux is installed, meaning you can use elf-exec.!COLOR_RESET!
+    ) else (
+        echo !COLOR_ERROR!The Windows Subsystem for Linux is not installed.!COLOR_RESET!
+        echo Do you want to install it? (y/N^)
+        set /p confirmation=
+        if "!confirmation!"=="y" (
+            echo Installing the Windows Subsystem for Linux...
+            wsl --install
+            goto shell
+        ) else (
+            echo Installation cancelled.
+        )
+    )
 ) else (
     cd !cd! >nul 2>&1
     call :run_bash_fallback 2>&1
