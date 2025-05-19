@@ -70,11 +70,11 @@ if not exist "%APPDATA%\kali_in_batch" (
     if errorlevel 2 exit
     if errorlevel 1 (
         cls
-        set /p "install_part=Choose a partitition or USB drive to install Kali in Batch on. Drive must be empty. Type the drive letter (e.g. E:) > "
+        set /p "install_part=Choose a partitition or USB drive to install Kali in Batch on. Drive must be empty. Type the drive letter without a colon (e.g. E) > "
 
         echo Testing if it exists...
         timeout /t 1 /nobreak >nul
-        if not exist "!install_part!\" (
+        if not exist "!install_part!:\" (
             echo !COLOR_ERROR!Error: Drive does not exist. Please try again.!COLOR_RESET!
             pause >nul
             exit
@@ -82,7 +82,7 @@ if not exist "%APPDATA%\kali_in_batch" (
         echo Testing if it is empty...
         timeout /t 1 /nobreak >nul
         rem Check if it is empty
-        dir "!install_part!\" >nul 2>nul
+        dir "!install_part!:\" >nul 2>nul
         if !errorlevel! neq 1 (
             echo !COLOR_ERROR!Error: Drive is not empty. Please try again.!COLOR_RESET!
             pause >nul
