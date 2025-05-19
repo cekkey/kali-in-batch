@@ -59,19 +59,12 @@ set "COLOR_PROMPT=!COLOR_BRIGHT_BLUE!!COLOR_BOLD!"
 
 cls
 set "username=%USERNAME%"
-title Kali Linux in Batch
+title Kali in Batch
 if not exist "%APPDATA%\kali_in_batch" (
     
-    echo                           ---------------------------------------------------
-    echo                          {                                                   }
-    echo                          {            KALI IN BATCH INSTALLER                }
-    echo                          {                                                   }
-    echo                          {                                                   }
-    echo                          {---------------------------------------------------}
-    echo                          {                   1. Install                      }
-    echo                          {                   2. Exit                         }
-    echo                          {                                                   }
-    echo                           ---------------------------------------------------
+    echo !COLOR_INFO!Welcome to Kali in Batch Installer!COLOR_RESET!
+    echo >> Press 1 to install Kali in Batch.
+    echo >> Press 2 to exit.
     echo.
     choice /c 12 /n /m ""
     if errorlevel 2 exit
