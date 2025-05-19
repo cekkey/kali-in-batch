@@ -290,7 +290,7 @@ if !current_dir!==!home_dir! (
 ) else (
     set current_dir=!cd!
 )
-title Kali in Batch - !current_dir!
+title Kali in Batch at !current_dir!
 rem Replace backslashes with forward slashes in !current_dir!
 set current_dir=!current_dir:\=/!
 rem Replace drive letters with nothing in !current_dir!
@@ -933,32 +933,32 @@ if !command!==ls (
     rem Check if any args contain ~ and if so, display the message Not supported
     for /f "tokens=* delims=*" %%a in ("!args!") do (
         if "%%a"=="~" (
-            echo Not supported
-            goto shell
+            rem Replace it with %bash_part%/home/%username%
+            set "!args!=!args:^~=%bash_part%/home/%username%!"
         )
     )
     for /f "tokens=* delims=*" %%a in ("!args2!") do (
         if "%%a"=="~" (
-            echo Not supported
-            goto shell
+            rem Replace it with %bash_part%/home/%username%
+            set "!args!=!args:^~=%bash_part%/home/%username%!"
         )
     )
     for /f "tokens=* delims=*" %%a in ("!args3!") do (
         if "%%a"=="~" (
-            echo Not supported
-            goto shell
+            rem Replace it with %bash_part%/home/%username%
+            set "!args!=!args:^~=%bash_part%/home/%username%!"
         )
     )
     for /f "tokens=* delims=*" %%a in ("!args4!") do (
         if "%%a"=="~" (
-            echo Not supported
-            goto shell
+            rem Replace it with %bash_part%/home/%username%
+            set "!args!=!args:^~=%bash_part%/home/%username%!"
         )
     )
     for /f "tokens=* delims=*" %%a in ("!args5!") do (
         if "%%a"=="~" (
-            echo Not supported
-            goto shell
+            rem Replace it with %bash_part%/home/%username%
+            set "!args!=!args:^~=%bash_part%/home/%username%!"
         )
     )
 
@@ -1116,37 +1116,79 @@ if !command!==ls (
         set "args5=!args5:Z:=/z/!"
     )
 
-    rem Check if any args contain ~ and if so, display the message Not supported
-    for /f "tokens=* delims=*" %%a in ("!args!") do (
-        if "%%a"=="~" (
-            echo Not supported
-            goto shell
-        )
+    rem Convert install_part to  git bash path
+    set "bash_part=!install_part:C:=/c!"
+    set "bash_part=!install_part:D:=/d!"
+    set "bash_part=!install_part:E:=/e!"
+    set "bash_part=!install_part:F:=/f!"
+    set "bash_part=!install_part:G:=/g!"
+    set "bash_part=!install_part:H:=/h!"
+    set "bash_part=!install_part:I:=/i!"
+    set "bash_part=!install_part:J:=/j!"
+    set "bash_part=!install_part:K:=/k!"
+    set "bash_part=!install_part:L:=/l!"
+    set "bash_part=!install_part:M:=/m!"
+    set "bash_part=!install_part:N:=/n!"
+    set "bash_part=!install_part:O:=/o!"
+    set "bash_part=!install_part:P:=/p!"
+    set "bash_part=!install_part:Q:=/q!"
+    set "bash_part=!install_part:R:=/r!"
+    set "bash_part=!install_part:S:=/s!"
+    set "bash_part=!install_part:T:=/t!"
+    set "bash_part=!install_part:U:=/u!"
+    set "bash_part=!install_part:V:=/v!"
+    set "bash_part=!install_part:W:=/w!"
+    set "bash_part=!install_part:X:=/x!"
+    set "bash_part=!install_part:Y:=/y!"
+    set "bash_part=!install_part:Z:=/z!"
+
+    rem Make sure ~ is replaced with %home_dir%
+    rem Convert %home_dir% to git bash path
+    set "bash_home_dir=!home_dir:C:=/c/!"
+    set "bash_home_dir=!home_dir:D:=/d/!"
+    set "bash_home_dir=!home_dir:E:=/e/!"
+    set "bash_home_dir=!home_dir:F:=/f/!"
+    set "bash_home_dir=!home_dir:G:=/g/!"
+    set "bash_home_dir=!home_dir:H:=/h/!"
+    set "bash_home_dir=!home_dir:I:=/i/!"
+    set "bash_home_dir=!home_dir:J:=/j/!"
+    set "bash_home_dir=!home_dir:K:=/k/!"
+    set "bash_home_dir=!home_dir:K:=/k/!"
+    set "bash_home_dir=!home_dir:L:=/l/!"
+    set "bash_home_dir=!home_dir:M:=/m/!"
+    set "bash_home_dir=!home_dir:N:=/n/!"
+    set "bash_home_dir=!home_dir:O:=/o/!"
+    set "bash_home_dir=!home_dir:P:=/p/!"
+    set "bash_home_dir=!home_dir:Q:=/q/!"
+    set "bash_home_dir=!home_dir:R:=/r/!"
+    set "bash_home_dir=!home_dir:S:=/s/!"
+    set "bash_home_dir=!home_dir:T:=/t/!"
+    set "bash_home_dir=!home_dir:U:=/u/!"
+    set "bash_home_dir=!home_dir:V:=/v/!"
+    set "bash_home_dir=!home_dir:W:=/w/!"
+    set "bash_home_dir=!home_dir:X:=/x/!"
+    set "bash_home_dir=!home_dir:Y:=/y/!"
+    set "bash_home_dir=!home_dir:Z:=/z/!"
+    rem Convert backslashes to forward slashes
+    set "bash_home_dir=!bash_home_dir:\=/!"
+
+    rem Check if args starts with ~ and replace it with home directory
+    if "!args:~0,1!"=="~" (
+        set "args=!bash_home_dir!!args:~1!"
     )
-    for /f "tokens=* delims=*" %%a in ("!args2!") do (
-        if "%%a"=="~" (
-            echo Not supported
-            goto shell
-        )
+    if "!args2:~0,1!"=="~" (
+        set "args2=!bash_home_dir!!args2:~1!"
     )
-    for /f "tokens=* delims=*" %%a in ("!args3!") do (
-        if "%%a"=="~" (
-            echo Not supported
-            goto shell
-        )
+    if "!args3:~0,1!"=="~" (
+        set "args3=!bash_home_dir!!args3:~1!"
     )
-    for /f "tokens=* delims=*" %%a in ("!args4!") do (
-        if "%%a"=="~" (
-            echo Not supported
-            goto shell
-        )
+    if "!args4:~0,1!"=="~" (
+        set "args4=!bash_home_dir!!args4:~1!"
     )
-    for /f "tokens=* delims=*" %%a in ("!args5!") do (
-        if "%%a"=="~" (
-            echo Not supported
-            goto shell
-        )
+    if "!args5:~0,1!"=="~" (
+        set "args5=!bash_home_dir!!args5:~1!"
     )
+
 
     rem Remove $RECYCLE.BIN and System\ Volume\ Information from the output
     !bash_path! -c "cd !bash_current_dir!; ls !args! !args2! !args3! !args4! !args5! | grep -v '$RECYCLE.BIN' | grep -v 'System\ Volume\ Information'" 2>&1
