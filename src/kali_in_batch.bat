@@ -1678,4 +1678,11 @@ if !command!==ls (
 )
 
 :new_shell_prompt
+where pwsh.exe >nul 2>&1
+if !errorlevel!==0 (
+    rem It is installed
+) else (
+    echo Please install PowerShell 7+ from the MS store!!
+    exit /b
+)
 pwsh.exe -noprofile -executionpolicy bypass -file "%APPDATA%\kali_in_batch\powershell\shell_prompt.ps1" -bashexepath !bash_path! -installpart !install_part!
