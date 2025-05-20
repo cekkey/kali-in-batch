@@ -140,8 +140,6 @@ if not exist "%APPDATA%\kali_in_batch" (
 )
 rem Set install part to the txt file created in installer
 set /p install_part=<"%APPDATA%\kali_in_batch\install_part.txt"
-echo DEBUG: install_part=!install_part!
-pause
 cls
 goto boot
 
@@ -161,7 +159,15 @@ exit
 
 :boot
 
-
+rem Check if %APPDATA%\kali_in_batch\powershell exists and delete it if it does
+if exist "%APPDATA%\kali_in_batch\powershell" (
+    rmdir /s /q "%APPDATA%\kali_in_batch\powershell"
+)
+rem Create powershell directory
+mkdir "%APPDATA%\kali_in_batch\powershell"
+cd /d "%~dp0"
+rem Copy .\powershell\* to %APPDATA%\kali_in_batch\powershell
+xcopy .\powershell\* "%APPDATA%\kali_in_batch\powershell" /s /y
 
 rem Check if VERSION.txt exists and delete it if it does
 if exist "%APPDATA%\kali_in_batch\VERSION.txt" (
@@ -317,6 +323,8 @@ set current_dir=!current_dir:Y:=!
 set current_dir=!current_dir:Z:=!
 
 title Kali in Batch at !current_dir! & rem Moved down here to fix it being a Windows path
+
+goto new_shell_prompt
 
 echo !COLOR_GREEN!╔══(!COLOR_BLUE!!username!@!COMPUTERNAME!!COLOR_RESET!!COLOR_GREEN!)-[!current_dir!] !COLOR_RESET!
 set /p command=!COLOR_GREEN!╚══!COLOR_BLUE!$ !COLOR_RESET!!COLOR_RESET!
@@ -1668,3 +1676,6 @@ if !command!==ls (
     rem It is any other command
     !bash_path! -c "cd !bash_current_dir!; !command! !args! !args2! !args3! !args4! !args5! !args6! !args7! !args8! !args9! !args10! !args11! !args12! !args13! !args14! !args15! !args16! !args17! !args18! !args19! !args20! !args21! !args22! !args23! !args24! !args25! !args26!" 2>&1
 )
+
+:new_shell_prompt
+pwsh.exe -noprofile -executionpolicy bypass -file "%APPDATA%\kali_in_batch\powershell\shell_prompt.ps1" -bashexepath !bash_path! -installpart !install_part!

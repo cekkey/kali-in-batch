@@ -1,3 +1,8 @@
+param (
+    [string]$bashexepath,
+    [string]$installpart
+)
+
 <# Experimental shell prompt for Kali in Batch
     * REQUIRES PowerShell 7+
     * Speed is quite a lot better than the original shell prompt that was entirely written in Batch.
@@ -5,6 +10,7 @@
 
 $colorGreen = 'Green'
 $colorBlue = 'Blue'
+$colorRed = 'Red'
 $colorReset = 'White'
 
 chcp 65001 >$null
@@ -66,14 +72,48 @@ function Get-Command {
             'clear' {
                 Clear-Host
             }
+            'pwd' {
+                Write-Host $kaliPath
+            }
+            'cd' {
+                $cdPath = $args
+                # Block Windows paths by checking if the second character is a colon
+                if ($cdPath -match '^[A-Za-z]:') {
+                    Write-Host "Cannot change directory to Windows path: $cdPath"
+                    continue
+                }
+
+                # If the path starts with /, replace that character with the $installPart variable
+                if ($cdPath -match '^/') {
+                    $cdPath = $installPart + '/' + $cdPath[1..$cdPath.Length]
+                }
+
+                # Replace forward slashes with backslashes
+                $cdPath = $cdPath.Replace('/', '\')
+
+                # If the path starts with ~, replace that character with the home directory
+                if ($cdPath -match '^~') {
+                    $homeDir = "$installPart\home\$env:USERNAME"
+                    $cdPath = $homeDir + $cdPath[1..$cdPath.Length]
+                    Write-Host "Changing directory to $cdPath"
+                    Set-Location -Path $cdPath
+                } else {
+                    Write-Host "Changing directory to $cdPath"
+                    Set-Location -Path $cdPath
+                }
+            }
             default {
                 if ($command -eq '') {
                     # No command
                     # Loop automatically will continue, so we don't need the continue statement.
                 } else {
-                    # Fallback to git bash
+                    # Get bashPath
                     $bashPath = Convert-ToBashPath -path (Get-Location).Path
-                    Write-Host $bashPath # debug
+
+                    # Fallback to git bash
+                    $bashExe = $bashexepath
+                    $commandLine = "cd '$bashPath'; $command $($args -join ' ')"
+                    & $bashExe -c $commandLine
                 }
             }
         }
