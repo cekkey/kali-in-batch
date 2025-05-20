@@ -204,7 +204,7 @@ if !errorlevel! neq 0 (
     exit
 )
 echo Checking for updates...
-curl -s https://codeberg.org/Kali-in-Batch/kali-in-batch/raw/branch/master/VERSION.txt >"!install_part!\tmp\VERSION.txt"
+curl -# https://codeberg.org/Kali-in-Batch/kali-in-batch/raw/branch/master/VERSION.txt >"!install_part!\tmp\VERSION.txt"
 rem Check if the version is the same
 set /p remote_version=<"!install_part!\tmp\VERSION.txt"
 set /p local_version=<"%APPDATA%\kali_in_batch\VERSION.txt"
@@ -218,6 +218,7 @@ if !remote_version! neq !local_version! (
     echo !COLOR_SUCCESS!Remote version: !remote_version!!COLOR_RESET!
     echo !COLOR_SUCCESS!Local version: !local_version!!COLOR_RESET!
 )
+timeout /t 1 >nul
 rem DEV BRANCH FIX: Delete VERSION.txt in tmp folder
 del "!install_part!\tmp\VERSION.txt"
 echo.
