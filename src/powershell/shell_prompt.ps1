@@ -50,7 +50,7 @@ function Invoke-Pkg {
             try {
                 $scriptContent = Invoke-WebRequest -Uri $packageUrl -UseBasicParsing -ErrorAction Stop | Select-Object -ExpandProperty Content
                 Write-Host "First 100 chars of script:" -ForegroundColor $colorCyan
-                Write-Host ($scriptContent.Substring(0, [Math]::Min(100, $scriptContent.Length))) -ForegroundColor $colorCyan
+                Write-Host ($scriptContent.Substring(0, [Math]::Min(100, $scriptContent.Length))) -ForegroundColor $colorReset -BackgroundColor $colorBlack
             } catch {
                 Write-Host "Failed to download package $package." -ForegroundColor $colorRed
                 return
@@ -114,8 +114,8 @@ function Invoke-Pkg {
             Write-Host "Downloading latest package script for $package..." -ForegroundColor $colorCyan
             try {
                 $latestContent = Invoke-WebRequest -Uri $packageUrl -UseBasicParsing -ErrorAction Stop | Select-Object -ExpandProperty Content
-                Write-Host "Download output preview (first 100 chars):" -ForegroundColor $colorCyan
-                Write-Host ($latestContent.Substring(0, [Math]::Min(100, $latestContent.Length))) -ForegroundColor $colorCyan -BackgroundColor $colorBlack
+                Write-Host "First 100 chars of script:" -ForegroundColor $colorCyan
+                Write-Host ($latestContent.Substring(0, [Math]::Min(100, $latestContent.Length))) -ForegroundColor $colorReset -BackgroundColor $colorBlack
             } catch {
                 Write-Host "Failed to download latest package $package." -ForegroundColor $colorRed
                 return
