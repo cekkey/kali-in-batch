@@ -174,7 +174,7 @@ if exist "%APPDATA%\kali_in_batch\VERSION.txt" (
     del "%APPDATA%\kali_in_batch\VERSION.txt"
 )
 rem Create VERSION.txt
-echo 1.3.0>"%APPDATA%\kali_in_batch\VERSION.txt"
+echo 2.0.0>"%APPDATA%\kali_in_batch\VERSION.txt"
 echo Starting services...
 where nmap >nul 2>nul
 if !errorlevel! neq 0 (
@@ -322,16 +322,21 @@ set current_dir=!current_dir:X:=!
 set current_dir=!current_dir:Y:=!
 set current_dir=!current_dir:Z:=!
 
-title Kali in Batch at !current_dir! & rem Moved down here to fix it being a Windows path
+::title Kali in Batch at !current_dir! & rem Moved down here to fix it being a Windows path
 
 goto new_shell_prompt
 
 :new_shell_prompt
 where pwsh.exe >nul 2>&1
 if !errorlevel!==0 (
-    rem It is installed
+    rem It is installed!
 ) else (
-    echo Please install PowerShell 7+ from the MS store!!
+    echo !COLOR_ERROR!Powershell is not installed.!COLOR_RESET!
+    echo !COLOR_INFO!You can install it from the MS Store.!COLOR_RESET!
     exit /b
 )
+
+rem The shell has been moved to a PowerShell script because of the limitations of the original shell that was written in batch.
+rem This happened as of version 2.0.0.
+rem It is a major version since this is a major rewrite of the shell.
 pwsh.exe -noprofile -executionpolicy bypass -file "%APPDATA%\kali_in_batch\powershell\shell_prompt.ps1" -bashexepath !bash_path! -installpart !install_part!

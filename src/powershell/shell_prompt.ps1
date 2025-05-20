@@ -3,15 +3,11 @@ param (
     [string]$installpart
 )
 
-<# Experimental shell prompt for Kali in Batch
-    * REQUIRES PowerShell 7+
-    * Speed is quite a lot better than the original shell prompt that was entirely written in Batch.
-#>
-
 $colorGreen = 'Green'
 $colorBlue = 'Blue'
 $colorCyan = 'Cyan'
 $colorRed = 'Red'
+$colorBlack = 'Black'
 $colorReset = 'White'
 
 chcp 65001 >$null
@@ -119,7 +115,7 @@ function Invoke-Pkg {
             try {
                 $latestContent = Invoke-WebRequest -Uri $packageUrl -UseBasicParsing -ErrorAction Stop | Select-Object -ExpandProperty Content
                 Write-Host "Download output preview (first 100 chars):" -ForegroundColor $colorCyan
-                Write-Host ($latestContent.Substring(0, [Math]::Min(100, $latestContent.Length))) -ForegroundColor $colorCyan
+                Write-Host ($latestContent.Substring(0, [Math]::Min(100, $latestContent.Length))) -ForegroundColor $colorCyan -BackgroundColor $colorBlack
             } catch {
                 Write-Host "Failed to download latest package $package." -ForegroundColor $colorRed
                 return
