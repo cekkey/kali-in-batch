@@ -75,14 +75,12 @@ if not exist "%APPDATA%\kali_in_batch" (
         set /p "install_part=Choose a partitition or USB drive to install Kali in Batch on. Drive must be empty. Type the drive letter with a colon (e.g. E:) > "
 
         echo Testing if it exists...
-        timeout /t 1 /nobreak >nul
         if not exist "!install_part!\" (
             echo !COLOR_ERROR!Error: Drive does not exist. Please try again.!COLOR_RESET!
             pause >nul
             exit
         )
         echo Testing if it is empty...
-        timeout /t 1 /nobreak >nul
         rem Check if it is empty
         dir "!install_part!\" >nul 2>nul
         if !errorlevel! neq 1 (
@@ -90,17 +88,13 @@ if not exist "%APPDATA%\kali_in_batch" (
             pause >nul
             exit
         )
-        timeout /t 1 /nobreak >nul
         echo Creating directories...
         mkdir "!install_part!\home" >nul 2>nul
         mkdir "!install_part!\home\!username!" >nul 2>nul
         mkdir "!install_part!\bin" >nul 2>nul
         mkdir "!install_part!\tmp" >nul 2>nul
-        timeout /t 1 /nobreak >nul
         echo Creating files...
-        timeout /t 1 /nobreak >nul
         echo Checking dependencies...
-        timeout /t 1 /nobreak >nul
     )
     where nmap >nul 2>nul
     if !errorlevel! neq 0 (
@@ -166,6 +160,9 @@ exit
 
 
 :boot
+
+
+
 rem Check if VERSION.txt exists and delete it if it does
 if exist "%APPDATA%\kali_in_batch\VERSION.txt" (
     del "%APPDATA%\kali_in_batch\VERSION.txt"
@@ -173,7 +170,6 @@ if exist "%APPDATA%\kali_in_batch\VERSION.txt" (
 rem Create VERSION.txt
 echo 1.3.0>"%APPDATA%\kali_in_batch\VERSION.txt"
 echo Starting services...
-timeout /t 1 /nobreak >nul
 where nmap >nul 2>nul
 if !errorlevel! neq 0 (
     echo !COLOR_ERROR!Error: Failed to start Nmap service: Nmap not found.!COLOR_RESET!
@@ -224,8 +220,6 @@ if !remote_version! neq !local_version! (
 )
 rem DEV BRANCH FIX: Delete VERSION.txt in tmp folder
 del "!install_part!\tmp\VERSION.txt"
-echo Done.
-timeout /t 1 /nobreak >nul
 echo.
 cls
 echo.
