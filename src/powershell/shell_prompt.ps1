@@ -10,11 +10,165 @@ param (
 
 $colorGreen = 'Green'
 $colorBlue = 'Blue'
+$colorCyan = 'Cyan'
 $colorRed = 'Red'
 $colorReset = 'White'
 
 chcp 65001 >$null
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+
+function Invoke-Pkg {
+    param (
+        [string[]]$PkgArgs,
+        [string]$InstallPart
+    )
+
+    if (-not $PkgArgs -or $PkgArgs.Count -eq 0) {
+        Write-Host "Usage: pkg (install/remove/upgrade/search/list)" -ForegroundColor $colorCyan
+        return
+    }
+
+    $command = $PkgArgs[0]
+    $package = if ($PkgArgs.Count -gt 1) { $PkgArgs[1] } else { $null }
+
+    switch ($command) {
+        'install' {
+            if (-not $package) {
+                Write-Host "Usage: pkg install package" -ForegroundColor $colorCyan
+                return
+            }
+
+            Write-Host "Checking if package $package is installed..." -ForegroundColor $colorCyan
+
+            $packagePath = Join-Path $InstallPart "bin\$package.sh"
+
+            if (Test-Path $packagePath) {
+                Write-Host "Package $package is already installed." -ForegroundColor $colorRed
+                return
+            }
+
+            # Check if package exists on the server by downloading script and checking content
+            $packageUrl = "https://codeberg.org/Kali-in-Batch/pkg/raw/branch/main/packages/$package/$package.sh"
+
+            Write-Host "Downloading package script for $package to check availability..." -ForegroundColor $colorCyan
+            try {
+                $scriptContent = Invoke-WebRequest -Uri $packageUrl -UseBasicParsing -ErrorAction Stop | Select-Object -ExpandProperty Content
+                Write-Host "First 100 chars of script:" -ForegroundColor $colorCyan
+                Write-Host ($scriptContent.Substring(0, [Math]::Min(100, $scriptContent.Length))) -ForegroundColor $colorCyan
+            } catch {
+                Write-Host "Failed to download package $package." -ForegroundColor $colorRed
+                return
+            }
+
+            if ($scriptContent.Trim() -eq "Not found.") {
+                Write-Host "Package $package is not available." -ForegroundColor $colorRed
+                return
+            }
+
+            Write-Host "Package $package is available. Installing..." -ForegroundColor $colorCyan
+
+            # Save the script to file
+            try {
+                $scriptContent | Out-File -FilePath $packagePath -Encoding UTF8
+                Write-Host "Package $package installed. Execute it by running: pkg-exec $package" -ForegroundColor $colorGreen
+            } catch {
+                Write-Host "Failed to save package $package." -ForegroundColor $colorRed
+            }
+        }
+
+        'remove' {
+            if (-not $package) {
+                Write-Host "Usage: pkg remove package" -ForegroundColor $colorCyan
+                return
+            }
+
+            $packagePath = Join-Path $InstallPart "bin\$package.sh"
+
+            Write-Host "Checking if package $package is installed..." -ForegroundColor $colorCyan
+
+            if (Test-Path $packagePath) {
+                Remove-Item $packagePath
+                Write-Host "Package $package removed." -ForegroundColor $colorGreen
+            } else {
+                Write-Host "Package $package is not installed." -ForegroundColor $colorRed
+            }
+        }
+
+        'upgrade' {
+            if (-not $package) {
+                Write-Host "Usage: pkg upgrade package" -ForegroundColor $colorCyan
+                return
+            }
+
+            $packagePath = Join-Path $InstallPart "bin\$package.sh"
+            $tempFile = Join-Path $InstallPart "tmp\output.txt"
+
+            Write-Host "Checking if package $package is installed..." -ForegroundColor $colorCyan
+
+            if (-not (Test-Path $packagePath)) {
+                Write-Host "Package $package is not installed." -ForegroundColor $colorRed
+                return
+            }
+
+            Write-Host "Checking if package is up to date..." -ForegroundColor $colorCyan
+
+            $packageUrl = "https://codeberg.org/Kali-in-Batch/pkg/raw/branch/main/packages/$package/$package.sh"
+
+            # Download latest package script
+            Write-Host "Downloading latest package script for $package..." -ForegroundColor $colorCyan
+            try {
+                $latestContent = Invoke-WebRequest -Uri $packageUrl -UseBasicParsing -ErrorAction Stop | Select-Object -ExpandProperty Content
+                Write-Host "Download output preview (first 100 chars):" -ForegroundColor $colorCyan
+                Write-Host ($latestContent.Substring(0, [Math]::Min(100, $latestContent.Length))) -ForegroundColor $colorCyan
+            } catch {
+                Write-Host "Failed to download latest package $package." -ForegroundColor $colorRed
+                return
+            }
+
+            if ($latestContent.Trim() -eq "Not found.") {
+                Write-Host "Package $package is not available remotely." -ForegroundColor $colorRed
+                return
+            }
+
+            $localCode = Get-Content $packagePath -Raw
+
+            if ($latestContent -eq $localCode) {
+                Write-Host "Package $package is up to date." -ForegroundColor $colorCyan
+            } else {
+                Write-Host "Upgrading package $package..." -ForegroundColor $colorCyan
+                try {
+                    $latestContent | Out-File -FilePath $packagePath -Encoding UTF8
+                    Write-Host "Package $package upgraded." -ForegroundColor $colorGreen
+                } catch {
+                    Write-Host "Failed to save upgraded package $package." -ForegroundColor $colorRed
+                }
+            }
+
+            Remove-Item $tempFile -ErrorAction SilentlyContinue
+        }
+
+        'search' {
+            Write-Host "Opening package database in your browser..." -ForegroundColor $colorCyan
+            Start-Process "https://codeberg.org/Kali-in-Batch/pkg/src/branch/main/packages/"
+        }
+
+        'list' {
+            $binDir = Join-Path $InstallPart "bin"
+            if (Test-Path $binDir) {
+                Get-ChildItem -Path $binDir -Filter '*.sh' | ForEach-Object {
+                    $_.BaseName
+                }
+            } else {
+                Write-Host "No packages installed." -ForegroundColor $colorCyan
+            }
+        }
+
+        default {
+            Write-Host "Unknown command: $command" -ForegroundColor $colorRed
+            Write-Host "Usage: pkg (install/remove/upgrade/search/list)" -ForegroundColor $colorCyan
+        }
+    }
+}
 
 function Convert-ToBashPath {
     param ([string]$path)
@@ -46,6 +200,8 @@ function Convert-ToKaliPath {
 function Get-Command {
     while ($true) {
         $kaliPath = Convert-ToKaliPath -path (Get-Location).Path
+        # Set title to kali path
+        $host.ui.RawUI.WindowTitle = "Kali in Batch - $kaliPath"
         Write-Host '╔══(' -NoNewline -ForegroundColor $colorGreen
         Write-Host "$env:USERNAME@$env:COMPUTERNAME" -NoNewline -ForegroundColor $colorBlue
         Write-Host ')-[' -NoNewline -ForegroundColor $colorGreen
@@ -76,44 +232,105 @@ function Get-Command {
                 Write-Host $kaliPath
             }
             'cd' {
-                $cdPath = $args
+                $cdPath = "$args"
                 # Block Windows paths by checking if the second character is a colon
                 if ($cdPath -match '^[A-Za-z]:') {
                     Write-Host "Cannot change directory to Windows path: $cdPath"
                     continue
                 }
 
-                # If the path starts with /, replace that character with the $installPart variable
+                # If the path starts with /, prepend installPart
                 if ($cdPath -match '^/') {
-                    $cdPath = $installPart + '/' + $cdPath[1..$cdPath.Length]
+                    $cdPath = "$installpart$cdPath" -replace '//+', '/'
+                }
+
+                # If the path starts with ~, replace with home dir
+                if ($cdPath -match '^~') {
+                    $homeDir = "$installpart\home\$env:USERNAME"
+                    $cdPath = $homeDir + $cdPath.Substring(1)
+                }
+                # If the path is empty, change to home dir
+                if ($cdPath -eq '') {
+                    $cdPath = "$installpart\home\$env:USERNAME"
                 }
 
                 # Replace forward slashes with backslashes
                 $cdPath = $cdPath.Replace('/', '\')
 
-                # If the path starts with ~, replace that character with the home directory
-                if ($cdPath -match '^~') {
-                    $homeDir = "$installPart\home\$env:USERNAME"
-                    $cdPath = $homeDir + $cdPath[1..$cdPath.Length]
-                    Write-Host "Changing directory to $cdPath"
-                    Set-Location -Path $cdPath
+                Set-Location -Path $cdPath
+            }
+            'pkg' {
+                Invoke-Pkg -PkgArgs $args -InstallPart $installpart
+            }
+            'pkg-exec' {
+                # Check if $installpart\bin\$args.sh exists
+                if (Test-Path "$installpart\bin\$args.sh") {
+                    # Execute the script
+                    $bashBinPath = Convert-ToBashPath -path "$installpart\bin\$args.sh"
+                    $bashExe = $bashexepath
+                    & "$bashExe" -c "cd $bashPath; source $bashBinPath"
                 } else {
-                    Write-Host "Changing directory to $cdPath"
-                    Set-Location -Path $cdPath
+                    Write-Host "Package not found: $args"
                 }
+            }
+            'wsl' {
+                Write-Host "Please install the elf-exec package using pkg install elf-exec, then run it here by doing pkg-exec elf-exec."
             }
             default {
                 if ($command -eq '') {
                     # No command
                     # Loop automatically will continue, so we don't need the continue statement.
                 } else {
-                    # Get bashPath
                     $bashPath = Convert-ToBashPath -path (Get-Location).Path
 
-                    # Fallback to git bash
+                    # Fallback to git bash with full per-argument path conversion
                     $bashExe = $bashexepath
-                    $commandLine = "cd '$bashPath'; $command $($args -join ' ')"
-                    & $bashExe -c $commandLine
+
+                    # Convert each arg separately
+                    $convertedArgs = @()
+                    foreach ($arg in $args) {
+                        # Block Windows absolute paths
+                        if ($arg -match '^[A-Za-z]:') {
+                            Write-Host "Cannot access Windows path: $arg" -ForegroundColor $colorRed
+                            continue
+                        }
+
+                        # Normalize slashes
+                        $conv = $arg.Replace('\', '/')
+
+                        # If it’s an absolute Kali path, prepend install part
+                        if ($conv -match '^/') {
+                            $conv = "$installpart$conv" -replace '//+', '/'
+                        }
+
+                        # Handle ~ → home dir
+                        if ($conv -match '^~') {
+                            $homeDir = "$installpart\home\$env:USERNAME"
+                            $bashifiedHome = Convert-ToBashPath -path $homeDir
+                            $conv = $conv -replace '^~', $bashifiedHome
+                        }
+
+                        $convertedArgs += $conv
+                    }
+
+                    # Run the command and capture output
+                    $commandLine = "cd '$bashPath'; $command $($convertedArgs -join ' ')"
+                    $output = & $bashExe -c $commandLine 2>&1
+
+                    # Filter out the directories
+                    $output | ForEach-Object {
+                        $_ -replace 'System\\ Volume\\ Information', '' `
+                        -replace '\$RECYCLE\.BIN', '' `
+                        -replace 'System Volume Information', '' `
+                    } | ForEach-Object {
+                        # Trim to clean up trailing spaces after removal
+                        $_.Trim()
+                    } | Where-Object {
+                        # Skip empty lines
+                        $_ -ne ''
+                    } | ForEach-Object {
+                        Write-Host $_
+                    }
                 }
             }
         }
