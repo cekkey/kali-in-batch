@@ -19,8 +19,8 @@ git clone https://codeberg.org/Kali-in-Batch/kali-in-batch.git
 cd kali-in-batch
 ```
 
-Then, run `kali_in_batch.bat` inside the src directory.
-DO NOT MOVE THE FILE OUTSIDE THE SRC DIRECTORY.
+Then, run `kali_in_batch.bat` inside the src directory. For proper functionality, don't move it out of the src directory.
+
 Do not run any of the PowerShell scripts manually, as they require special arguments given by `kali_in_batch.bat`.
 
 Once you have set up Kali in Batch, try installing this package in the Kali in Batch shell:
