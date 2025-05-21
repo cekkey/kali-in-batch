@@ -10,6 +10,11 @@ $colorRed = 'Red'
 $colorBlack = 'Black'
 $colorReset = 'White'
 
+<# shell_prompt.ps1
+    * Shell prompt for the Kali in Batch project.
+    * Called from kali_in_batch.bat
+#>
+
 chcp 65001 >$null
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
@@ -58,6 +63,24 @@ function Invoke-Pkg {
 
             if ($scriptContent.Trim() -eq "Not found.") {
                 Write-Host "Package $package is not available." -ForegroundColor $colorRed
+                return
+            }
+
+            # Check if the script contains rm -rf or curl
+            if ($scriptContent -match 'rm -rf' -or $scriptContent -match 'curl' -or $scriptContent -match 'http') {
+                Write-Host "Package $package contains potentially dangerous commands. Do you want to continue? (y/n)" -ForegroundColor $colorCyan
+                $confirmation = Read-Host
+                if ($confirmation -eq "y") {
+                    Write-Host "Continuing with installation of package $package..." -ForegroundColor $colorCyan
+                } else {
+                    Write-Host "Installation of package $package canceled." -ForegroundColor $colorRed
+                    return
+                }
+            }
+
+            # Check if the script tries to interact with other drives like /c/ or tries to interact with browsers
+            if ($scriptContent -match '/c/' -or $scriptContent -match 'chrome' -or $scriptContent -match 'firefox' -or $scriptContent -match 'C:') {
+                Write-Host "Package $package is likely malicious. Aborting..."
                 return
             }
 
