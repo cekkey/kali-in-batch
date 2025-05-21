@@ -7,6 +7,7 @@ A simulated Kali Linux environment in batch.
 - [Nmap](https://nmap.org/)
 - [Git for Windows](https://git-scm.com/download/win) (make sure you get Git Bash and use a system-wide installation)
 - [Vim (optional)](https://www.vim.org/download.php)
+- [PowerShell 7+](https://github.com/PowerShell/PowerShell/releases) (or you can get it from Microsoft Store)
 
 ### Usage
 
@@ -25,11 +26,60 @@ Once you have set up Kali in Batch, try installing this package in the Kali in B
 ```bash
 pkg install elf-exec
 ```
-This package allows you to execute Linux binaries using WSL.
+This package allows you to execute Linux binaries.
 Run it:
 ```bash
-exec elf-exec
+pkg-exec elf-exec
 ```
+
+### Quick tutorial
+
+#### During the Kali in Batch installer
+First, you should open diskmgmt.msc.
+Shrink a drive by any amount of space you want.
+Then, create a Partition. Make sure it has a drive letter.
+Then, run the `kali_in_batch.bat` file.
+In there, just enter your drive letter and Kali in Batch will be quickly installed.
+
+#### After installation
+
+Try the following commands:
+
+```bash
+ls
+```
+```bash
+cd /
+```
+```bash
+cd ~
+```
+```bash
+pwd
+```
+```bash
+ls -l
+```
+```bash
+cd ..
+```
+```bash
+uname -a
+```
+```bash
+whoami
+```
+```bash
+git --version
+```
+```bash
+pkg install hello-world
+```
+```bash
+pkg-exec hello-world
+```
+
+These should help you get familiar with the shell. If you're already familiar with Linux shells, only do the package manager commands.
 
 ### Features
 
@@ -39,6 +89,7 @@ exec elf-exec
 - [x] Text editing with vim or any other text editor
 - [x] Terminal control with clear, exit, and help
 - [x] System information with uname and whoami
+- [x] Version control with Git
 
 ---
 
