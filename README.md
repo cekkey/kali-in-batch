@@ -1,6 +1,6 @@
 ## Kali in Batch
 
-A simulated Kali Linux environment in batch.
+A simulated Kali Linux environment in Batch and PowerShell.
 
 ### Dependencies
 
@@ -21,6 +21,7 @@ cd kali-in-batch
 
 Then, run `kali_in_batch.bat` inside the src directory.
 DO NOT MOVE THE FILE OUTSIDE THE SRC DIRECTORY.
+Do not run any of the PowerShell scripts manually, as they require special arguments given by `kali_in_batch.bat`.
 
 Once you have set up Kali in Batch, try installing this package in the Kali in Batch shell:
 ```bash
