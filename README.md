@@ -35,11 +35,14 @@ pkg-exec elf-exec
 ### Quick tutorial
 
 #### During the Kali in Batch installer
-First, you should open diskmgmt.msc.
-Shrink a drive by any amount of space you want.
-Then, create a Partition. Make sure it has a drive letter.
-Then, run the `kali_in_batch.bat` file.
-In there, just enter your drive letter and Kali in Batch will be quickly installed.
+
+- Press Windows + R
+- Type diskmgmt.msc
+- Shrink any drive with any amount of space
+- Create a drive in the unallocated space
+- Type the drive letter of the new drive in the Kali in Batch installer
+- Press Enter
+- After this, Kali in Batch should be automatically set up
 
 #### After installation
 
