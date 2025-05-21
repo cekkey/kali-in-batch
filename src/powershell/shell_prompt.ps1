@@ -336,7 +336,7 @@ function Get-Command {
                         # Block Windows absolute paths
                         if ($arg -match '^[A-Za-z]:') {
                             Write-Host "Cannot access Windows path: $arg" -ForegroundColor $colorRed
-                            return
+                            continue
                         }
 
                         # Normalize slashes
