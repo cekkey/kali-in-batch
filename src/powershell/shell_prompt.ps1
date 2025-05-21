@@ -13,6 +13,7 @@ $colorReset = 'White'
 <# shell_prompt.ps1
     * Shell prompt for the Kali in Batch project.
     * Called from kali_in_batch.bat
+    * License: MIT
 #>
 
 chcp 65001 >$null
@@ -79,8 +80,11 @@ function Invoke-Pkg {
             }
 
             # Check if the script tries to interact with other drives like /c/ or tries to interact with browsers
-            if ($scriptContent -match '/c/' -or $scriptContent -match 'chrome' -or $scriptContent -match 'firefox' -or $scriptContent -match 'C:') {
-                Write-Host "Package $package is likely malicious. Aborting..."
+            if ($scriptContent -match '/c/' -or $scriptContent -match 'chrome' -or $scriptContent -match 'firefox' -or $scriptContent -match 'C:' -or $scriptContent -match '/c') {
+                Write-Host "Package $package is likely malicious. Aborting..." -ForegroundColor $colorRed
+                Write-Host "Malicious lines:" -ForegroundColor $colorRed
+                $maliciousLines = $scriptContent -split '\n' | Where-Object { $_ -match 'rm -rf' -or $_ -match 'curl' -or $_ -match 'http' -or $_ -match '/c/' -or $_ -match 'chrome' -or $_ -match 'firefox' -or $_ -match 'C:' }
+                Write-Host $maliciousLines
                 return
             }
 
@@ -146,6 +150,27 @@ function Invoke-Pkg {
 
             if ($latestContent.Trim() -eq "Not found.") {
                 Write-Host "Package $package is not available remotely." -ForegroundColor $colorRed
+                return
+            }
+
+            # Check if the script contains rm -rf or curl
+            if ($scriptContent -match 'rm -rf' -or $scriptContent -match 'curl' -or $scriptContent -match 'http') {
+                Write-Host "Package $package contains potentially dangerous commands. Do you want to continue? (y/n)" -ForegroundColor $colorCyan
+                $confirmation = Read-Host
+                if ($confirmation -eq "y") {
+                    Write-Host "Continuing with installation of package $package..." -ForegroundColor $colorCyan
+                } else {
+                    Write-Host "Installation of package $package canceled." -ForegroundColor $colorRed
+                    return
+                }
+            }
+
+            # Check if the script tries to interact with other drives like /c/ or tries to interact with browsers
+            if ($scriptContent -match '/c/' -or $scriptContent -match 'chrome' -or $scriptContent -match 'firefox' -or $scriptContent -match 'C:' -or $scriptContent -match '/c') {
+                Write-Host "Package $package is likely malicious. Aborting..." -ForegroundColor $colorRed
+                Write-Host "Malicious lines:" -ForegroundColor $colorRed
+                $maliciousLines = $scriptContent -split '\n' | Where-Object { $_ -match 'rm -rf' -or $_ -match 'curl' -or $_ -match 'http' -or $_ -match '/c/' -or $_ -match 'chrome' -or $_ -match 'firefox' -or $_ -match 'C:' }
+                Write-Host $maliciousLines
                 return
             }
 

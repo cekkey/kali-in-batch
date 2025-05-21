@@ -2,6 +2,9 @@
 chcp 65001 >nul
 setlocal enabledelayedexpansion
 
+rem * kali_in_batch.bat
+rem * License: MIT
+
 rem Color Definitions
 set "COLOR_RESET=[0m"
 set "COLOR_BLACK=[30m"
@@ -215,6 +218,7 @@ rem Check if the version is the same
 set /p remote_version=<"!install_part!\tmp\VERSION.txt"
 set /p local_version=<"%APPDATA%\kali_in_batch\VERSION.txt"
 if !remote_version! neq !local_version! (
+    rem Outdated Kali in Batch installation
     echo !COLOR_WARNING!New version available!!COLOR_RESET!
     echo !COLOR_WARNING!Remote version: !remote_version!!COLOR_RESET!
     echo !COLOR_WARNING!Local version: !local_version!!COLOR_RESET!
