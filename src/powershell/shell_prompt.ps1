@@ -240,6 +240,35 @@ function Convert-ToKaliPath {
     return $kaliPath
 }
 
+function Get-OperatingSystem {
+    Write-Host "Kali in Batch"
+}
+
+function Get-Kernel {
+    Write-Host "KALI-IN-BATCH_WINNT"
+}
+
+function Get-Architecture {
+    $architecture = [System.Runtime.InteropServices.RuntimeInformation]::OSArchitecture
+    Write-Host "$architecture"
+}
+
+function Get-UnameVersion {
+    Write-Host "uname for Kali in Batch v2.1.0"
+}
+
+function Get-UnameHelp {
+    Write-Host "Usage: uname [OPTION]..."
+    Write-Host "OPTIONS:"
+    Write-Host "  -a, --all: print all available information"
+    Write-Host "  -o, --operating-system: print operating system name"
+    Write-Host "  -s, --kernel-name, [no flag]: print kernel name"
+    Write-Host "  -p,  --processor: print processor type"
+    Write-Host "  --version: print uname version information"
+    Write-Host "  -h, --help: display this help"
+    Write-Host "====================================================="
+    Write-Host "This uname is not associated with any other uname programs. It is a custom implementation of the uname command for Kali in Batch."
+}
 
 function Get-Command {
     while ($true) {
@@ -319,6 +348,42 @@ function Get-Command {
             }
             'wsl' {
                 Write-Host "Please install the elf-exec package using pkg install elf-exec, then run it here by doing pkg-exec elf-exec."
+            }
+            'uname' {
+                if ($args.Count -eq 0) {
+                    Get-Kernel
+                } else {
+                    if ($args -eq '-a' -or $args -eq '--all') {
+                        Write-Host "OS: " -NoNewline
+                        Get-OperatingSystem
+                        Write-Host "Kernel: " -NoNewline
+                        Get-Kernel
+                        Write-Host "Architecture: " -NoNewline
+                        Get-Architecture
+                        Write-Host "Version: " -NoNewline
+                        Get-UnameVersion
+                    }
+                    if ($args -eq '-o' -or $args -eq '--operating-system') {
+                        Get-OperatingSystem
+                    }
+                    if ($args -eq '-s' -or $args -eq '--kernel-name') {
+                        Get-Kernel
+                    }
+                    if ($args -eq '-p' -or $args -eq '--processor') {
+                        Get-Architecture
+                    }
+                    if ($args -eq '--version') {
+                        Get-UnameVersion
+                    }
+                    if ($args -eq '-h' -or $args -eq '--help') {
+                        Get-UnameHelp
+                    }
+                    # Check if the argument is unrecognized
+                    if ($args -ne '-a' -and $args -ne '--all' -and $args -ne '-o' -and $args -ne '--operating-system' -and $args -ne '-s' -and $args -ne '--kernel-name' -and $args -ne '-p' -and $args -ne '--processor' -and $args -ne '--version' -and $args -ne '-h' -and $args -ne '--help') {
+                        Write-Host "Unrecognized argument: $args"
+                        Write-Host "Run uname --help for usage information."
+                    }
+                }
             }
             default {
                 if ($command -eq '') {

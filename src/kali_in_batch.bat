@@ -177,7 +177,7 @@ if exist "%APPDATA%\kali_in_batch\VERSION.txt" (
     del "%APPDATA%\kali_in_batch\VERSION.txt"
 )
 rem Create VERSION.txt
-echo 2.0.2>"%APPDATA%\kali_in_batch\VERSION.txt"
+echo 2.1.0>"%APPDATA%\kali_in_batch\VERSION.txt"
 echo Starting services...
 where nmap >nul 2>nul
 if !errorlevel! neq 0 (
@@ -276,7 +276,7 @@ if exist !kalirc! (
     !bash_path! -c "cd !bash_current_dir!; source .kalirc" 2>&1
     echo.
     if not exist "!home_dir!\.no_help_startup" (
-        echo Hello !username!, type 'help' for a list of commands.
+        echo Hello !username!, welcome to Kali in Batch!
         echo If you want to disable this message, create a file called .no_help_startup in your home directory.
         echo.
     )
@@ -284,7 +284,7 @@ if exist !kalirc! (
 ) else (
     echo No .kalirc file found. Try creating one, it is a bash script that runs on startup.
     echo.
-    echo Hello !username!, type 'help' for a list of commands.
+    echo Hello !username!, welcome to Kali in Batch!
     goto shell
 )
 
@@ -331,10 +331,14 @@ set current_dir=!current_dir:Z:=!
 goto new_shell_prompt
 
 :new_shell_prompt
+
+rem Check if PS 7+ is installed
+rem PS 7+ uses pwsh.exe instead of powershell.exe
 where pwsh.exe >nul 2>&1
 if !errorlevel!==0 (
     rem It is installed!
 ) else (
+    rem It is not installed!
     echo !COLOR_ERROR!Powershell is not installed.!COLOR_RESET!
     echo !COLOR_INFO!You can install it from the MS Store.!COLOR_RESET!
     exit /b
