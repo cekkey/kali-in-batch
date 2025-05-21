@@ -359,21 +359,25 @@ function Get-Command {
 
                     # Run the command and capture output
                     $commandLine = "cd '$bashPath'; $command $($convertedArgs -join ' ')"
-                    $output = & $bashExe -c $commandLine 2>&1
+                    if ($command -eq 'ls' -or $command -eq 'dir') {
+                        $output = & $bashExe -c $commandLine
 
-                    # Filter out the directories
-                    $output | ForEach-Object {
-                        $_ -replace 'System\\ Volume\\ Information', '' `
-                        -replace '\$RECYCLE\.BIN', '' `
-                        -replace 'System Volume Information', '' `
-                    } | ForEach-Object {
-                        # Trim to clean up trailing spaces after removal
-                        $_.Trim()
-                    } | Where-Object {
-                        # Skip empty lines
-                        $_ -ne ''
-                    } | ForEach-Object {
-                        Write-Host $_
+                        # Filter out the directories
+                        $output | ForEach-Object {
+                            $_ -replace 'System\\ Volume\\ Information', '' `
+                            -replace '\$RECYCLE\.BIN', '' `
+                            -replace 'System Volume Information', '' `
+                        } | ForEach-Object {
+                            # Trim to clean up trailing spaces after removal
+                            $_.Trim()
+                        } | Where-Object {
+                            # Skip empty lines
+                            $_ -ne ''
+                        } | ForEach-Object {
+                            Write-Host $_
+                        }
+                    } else {
+                        & $bashExe -c $commandLine # To not break things like vim or nvim
                     }
                 }
             }
